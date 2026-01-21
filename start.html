@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>ROG Dash - Final Station</title>
+    <link rel="stylesheet" type="text/css" href="format.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="sidebar sidebar-left">
+            <div class="widget-box">
+                <div class="widget-title">MÉTÉO RÉELLE (Charleroi)</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span id="real-temp" style="font-size: 30px; font-weight: bold; color: #00ffcc;">--°C</span>
+                    <span id="real-desc" style="color: #00ffcc; font-size: 10px;">SCANNING...</span>
+                </div>
+                <div class="stat-row">RESSENTI: <span id="real-feel">--°C</span></div>
+                <div class="stat-row">HUMIDITÉ: <span id="real-hum">--%</span></div>
+                <div class="bar-bg"><div id="hum-bar" class="bar-fill-blue" style="width: 0%;"></div></div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">PRÉVISIONS 10 JOURS</div>
+                <div id="forecast-container" class="forecast-list">
+                    <div class="stat-row">INITIALISATION...</div>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">MARCHÉS CRYPTO</div>
+                <div class="crypto-row"><span>BITCOIN</span><span id="btc-price" class="price-tag">-- €</span></div>
+                <div class="crypto-row"><span>ETHEREUM</span><span id="eth-price" class="price-tag">-- €</span></div>
+                <div class="crypto-row"><span>SOLANA</span><span id="sol-price" class="price-tag">-- €</span></div>
+                <div class="crypto-row"><span>XRP</span><span id="xrp-price" class="price-tag">-- €</span></div>
+                <div class="crypto-row"><span>CARDANO</span><span id="ada-price" class="price-tag">-- €</span></div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">CENTRE MULTIMÉDIA</div>
+                <div class="shortcut-grid">
+                    <a href="https://www.youtube.com" target="_blank" class="btn-short btn-yt">YOUTUBE</a>
+                    <a href="https://www.netflix.com" target="_blank" class="btn-short btn-nfx">NETFLIX</a>
+                    <a href="https://www.primevideo.com" target="_blank" class="btn-short btn-amz">PRIME VIDEO</a>
+                    <a href="https://www.disneyplus.com" target="_blank" class="btn-short btn-dis">DISNEY+</a>
+                    <a href="https://open.spotify.com" target="_blank" class="btn-short btn-spt">SPOTIFY</a>
+                    <a href="https://www.twitch.tv" target="_blank" class="btn-short btn-twh">TWITCH</a>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">ANALYSEUR DE FLUX RÉSEAU</div>
+                <div class="stat-row" style="font-family: 'Courier Prime'; font-size: 10px; color: #00ffcc;">
+                    ENTRANT: <span id="net-in">0.0</span> KB/s
+                    <div class="bar-bg"><div id="bar-net-in" class="bar-fill-blue" style="width: 45%;"></div></div>
+                </div>
+                <div class="stat-row" style="font-family: 'Courier Prime'; font-size: 10px; color: #ffffff; margin-top: 10px;">
+                    SORTANT: <span id="net-out">0.0</span> KB/s
+                    <div class="bar-bg"><div id="bar-net-out" class="bar-fill-blue" style="width: 15%; background: #ffffff; box-shadow: 0 0 8px #ffffff;"></div></div>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">SÉCURITÉ & PORTS</div>
+                <div class="console-box" style="font-size: 9px;">
+                    > PORT 80: <span class="status-ok">SECURISE</span><br>
+                    > PORT 443: <span class="status-ok">ENCRYPTED</span><br>
+                    > FIREWALL: <span class="status-ok">MONITORING</span><br>
+                    > THREAT LEVEL: <span class="status-ok">ZERO</span>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">FLUX SCANNER NEWS</div>
+                <div class="news-ticker"><div id="news-stream" class="news-content">> INITIALISATION...</div></div>
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <div class="weather-header">
+                <span>LOCALISATION: CHARLEROI, BE</span>
+                <span id="center-weather">--°C</span>
+                <span id="center-details">CHARGEMENT...</span>
+            </div>
+
+            <div id="clock-container" style="text-align:center;">
+                <div id="clock">00:00:00</div>
+                <div id="date" style="color:#777; font-size:12px; letter-spacing:2px;">STATION ONLINE</div>
+            </div>
+
+            <div class="grid-container">
+                <a class="card" href="http://www.google.be"><img src="images/google.jpg"></a>
+                <a class="card" href="https://gemini.google.com/"><img src="images/gemini.jpg"></a>
+                <a class="card" href="http://www.facebook.com/"><img src="images/facebook-virus.jpg"></a>
+                <a class="card" href="http://www.youtube.com/"><img src="images/y.jpg"></a>
+                <a class="card" href="https://www.yggtorrent.org/"><img src="images/Yggtorrent.jpg"></a>
+                <a class="card" href="https://www.zone-telechargement.irish/"><img src="images/zone-telechargement.jpg"></a>
+                <a class="card" href="https://www.tirexo.fit/"><img src="images/tirevo.jpg"></a>
+                <a class="card" href="https://vsthemes.org/en/"><img src="images/versus-themes.jpg"></a>
+                <a class="card" href="https://www.hagglezon.com/"><img src="images/hagglezon.jpg"></a>
+                <a class="card" href="https://www.amazon.com.be/"><img src="images/amazon.jpg"></a>
+                <a class="card" href="http://fr.aliexpress.com/"><img src="images/aliexpres.jpg"></a>
+                <a class="card" href="http://www.2ememain.be/"><img src="images/2.ieme.main.jpg"></a>
+                <a class="card" href="https://dropreference.com/"><img src="images/dropreference.jpg"></a>
+                <a class="card" href="https://ebanking.ing.be/"><img src="images/ing.jpg"></a>
+                <a class="card" href="https://mail.google.com/"><img src="images/gmail.jpg"></a>
+                <a class="card" href="http://www.live.com/"><img src="images/live.jpg"></a>
+            </div>
+
+            <div class="search-container-center">
+                <form action="https://www.google.com/search" method="GET" class="search-form" onsubmit="clearSearch()">
+                    <div class="search-logo-box">
+                        <a href="https://www.google.com/">
+                            <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="G" class="google-icon-futuristic">
+                        </a>
+                    </div>
+                    <input type="text" id="search-input" name="q" placeholder="ENTREZ VOTRE RECHERCHE..." autofocus>
+                    <button type="submit">EXECUTÉ</button>
+                </form>
+            </div>
+
+            <div class="bottom-status-bar" style="text-align:center; color:#00ffcc; font-size:10px; letter-spacing:1px;">
+                STATUT DU RÉSEAU: OPTIMAL | SÉCURITÉ: ACTIVE
+            </div>
+        </div>
+
+        <div class="sidebar sidebar-right">
+            <div class="widget-box">
+                <div class="widget-title">PERFORMANCE LIVE</div>
+                <div class="stat-row">CPU: <span id="cpu-val">--%</span><div class="bar-bg"><div id="cpu-bar" class="bar-fill-blue" style="width: 0%;"></div></div></div>
+                <div class="stat-row">RAM: <span id="ram-val">--%</span><div class="bar-bg"><div id="ram-bar" class="bar-fill-blue" style="width: 0%;"></div></div></div>
+                <div class="stat-row" style="color:#00ffcc; font-family:monospace; margin-top:10px;">
+                    PING: <span id="net-ping">--</span>ms | DL: <span id="net-dl">--</span>Mb | UL: <span id="net-ul">--</span>Mb
+                </div>
+            </div>    
+
+            <div class="widget-box">
+                <div class="widget-title">ÉNERGIE & THERMIQUE</div>
+                <div class="stat-row">TEMPÉRATURE CPU: <span id="cpu-temp" style="color:#00ffcc;">--°C</span></div>
+                <div class="shortcut-grid">
+                    <a href="javascript:void(0)" id="btn-turbo" class="btn-short btn-turbo-fix" onclick="setPowerMode('TURBO')">MODE TURBO</a>
+                    
+                    <a href="javascript:void(0)" id="btn-eco" class="btn-short" onclick="setPowerMode('ECO')">ÉCO MODE</a>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">Statut Stockage</div>
+                <div class="stat-row">
+                    <div class="storage-info"><span>DISQUE (C:)</span><span class="storage-val">687GB / 1TB</span></div>
+                    <div class="bar-bg"><div class="bar-fill-blue" style="width: 86%;"></div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="storage-info"><span>DONNÉES (D:)</span><span class="storage-val">673GB / 1TB</span></div>
+                    <div class="bar-bg"><div class="bar-fill-blue" style="width: 85%;"></div></div>
+                </div>
+                <div class="stat-row" style="margin-bottom:0;">
+                    <div class="storage-info"><span>DONNÉES (E:)</span><span class="storage-val">32GB / 1TB</span></div>
+                    <div class="bar-bg"><div class="bar-fill-blue" style="width: 3%;"></div></div>
+                </div>
+
+            <div class="widget-box">
+                <div class="widget-title">Explorateur</div>
+                <div class="shortcut-grid">
+                    <a href="file:///C:/Users/Vassili Flerianos/Documents/" class="btn-short">Documents</a>
+                    <a href="file:///C:/Users/Vassili Flerianos/Downloads/" class="btn-short">Téléchargement</a>
+                    <a href="file:///C:/Users/Vassili Flerianos/Pictures/" class="btn-short">Images</a>
+                    <a href="file:///C:/Users/Vassili Flerianos/Videos/" class="btn-short">Vidéos</a>
+                    <a href="file:///C:/Users/Vassili Flerianos/Music/" class="btn-short">Musique</a>
+                    <a href="file:///E:/Vuze Downloads" class="btn-short">Vuze Download</a>
+                    <a href="file:///C:/Program Files" class="btn-short">Programmes</a>
+                    <a href="file:///C:/" class="btn-short">Disque C:</a>
+                </div>
+            </div>    
+
+            <div class="widget-box">
+                <div class="widget-title">Gestion Système</div>
+                <div class="shortcut-grid">
+                    <a href="ms-settings:" class="btn-short">Paramètres</a>
+                    <a href="ms-settings:display" class="btn-short">Écran</a>
+                    <a href="ms-settings:display-advancedgraphics" class="btn-short">Paramètres Graphiques</a>
+                    <a href="ms-settings:sound" class="btn-short">Son</a>
+                    <a href="ms-settings:apps-volume" class="btn-short">Mélangeur de volume</a>
+                    <a href="ms-settings:mousetouchpad" class="btn-short">Souris</a>
+                    <a href="ms-settings:appsfeatures" class="btn-short">Application</a>
+                    <a href="ms-settings:personalization" class="btn-short">Thèmes</a>
+                    <a href="ms-settings:bluetooth" class="btn-short">Bluetooth</a>
+                    <a href="ms-settings:network-ethernet" class="btn-short">Ethernet</a>
+                    <a href="ms-settings:network-wifi" class="btn-short">Wi-Fi</a>
+                    <a href="ms-settings:storagesense" class="btn-short">Stockage</a>
+                    <a href="ms-settings:windowsdefender" class="btn-short">Sécurité</a>
+                    <a href="ms-settings:windowsupdate" class="btn-short">Windows Updates</a>
+                </div>
+            </div>    
+
+            <div class="widget-box">
+                <div class="widget-title">Maintenance</div>
+                <div class="shortcut-grid">
+                    <a href="ms-settings:troubleshoot" class="btn-short">Dépannage</a>
+                    <a href="ms-settings:recovery" class="btn-short">Récupérer</a>
+                    <a href="ms-settings:storagesense" class="btn-short">Optimiser</a>
+                    <a href="ms-settings:about" class="btn-short">Infos PC</a>
+                </div>
+            </div>
+    
+            <div class="widget-box">
+                <div class="widget-title">PROCESSUS CRITIQUES</div>
+                <div class="console-box" id="process-list">
+                    Firefox.exe <span class="status-ok" style="float:right;">2.4%</span><br>
+                    Explorer.exe <span class="status-ok" style="float:right;">0.8%</span><br>
+                    System Idle <span class="status-ok" style="float:right;">94.0%</span>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">CONSOLE SYSTÈME</div>
+                <div class="console-box">
+                    > Traffic Monitor: <span class="status-ok">Active</span><br>
+                    > Disk Integrity: <span class="status-ok">100%</span><br>
+                    > Security Shield: <span class="status-ok">Running</span><br>
+                    > Welcome back, Vassili.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('fr-FR');
+            document.getElementById('date').innerText = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+        }
+
+        function updateStats() {
+            const cpu = Math.floor(Math.random() * 15) + 5;
+            const ram = Math.floor(Math.random() * 5) + 30;
+            const temp = Math.floor(Math.random() * 5) + 42;
+            
+            document.getElementById('cpu-val').innerText = cpu + "%";
+            document.getElementById('cpu-bar').style.width = cpu + "%";
+            document.getElementById('ram-val').innerText = ram + "%";
+            document.getElementById('ram-bar').style.width = ram + "%";
+            document.getElementById('cpu-temp').innerText = temp + "°C";
+            
+            document.getElementById('net-ping').innerText = Math.floor(Math.random() * 5) + 10;
+            document.getElementById('net-dl').innerText = (Math.random() * 50 + 900).toFixed(1);
+            document.getElementById('net-ul').innerText = (Math.random() * 20 + 580).toFixed(1);
+        }
+
+        async function getRealWeather() {
+            try {
+                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=50.41&longitude=4.44&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=10");
+                const data = await res.json();
+                const c = data.current;
+                
+                document.getElementById('real-temp').innerText = Math.round(c.temperature_2m) + "°C";
+                document.getElementById('center-weather').innerText = Math.round(c.temperature_2m) + "°C";
+                document.getElementById('real-feel').innerText = Math.round(c.apparent_temperature) + "°C";
+                document.getElementById('real-hum').innerText = c.relative_humidity_2m + "%";
+                document.getElementById('hum-bar').style.width = c.relative_humidity_2m + "%";
+                document.getElementById('center-details').innerText = `VENT: ${c.wind_speed_10m} KM/H | HUMIDITÉ: ${c.relative_humidity_2m}%`;
+                
+                const codes = {0:"DÉGAGÉ", 1:"BEAU", 2:"NUAGEUX", 3:"COUVERT", 45:"BROUILLARD", 61:"PLUIE", 71:"NEIGE"};
+                document.getElementById('real-desc').innerText = codes[c.weather_code] || "STABLE";
+
+                const container = document.getElementById('forecast-container');
+                container.innerHTML = '';
+                data.daily.time.forEach((date, i) => {
+                    const day = new Date(date).toLocaleDateString('fr-FR', {weekday: 'short'}).toUpperCase();
+                    container.innerHTML += `<div class="forecast-row"><span>${day}</span><span style="color:#00ffcc;">${Math.round(data.daily.temperature_2m_max[i])}° / ${Math.round(data.daily.temperature_2m_min[i])}°</span></div>`;
+                });
+            } catch (e) { console.log("Weather Error"); }
+        }
+
+        async function getCrypto() {
+            try {
+                const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano,polkadot&vs_currencies=eur");
+                const data = await res.json();
+                
+                document.getElementById('btc-price').innerText = data.bitcoin.eur.toLocaleString() + " €";
+                document.getElementById('eth-price').innerText = data.ethereum.eur.toLocaleString() + " €";
+                document.getElementById('sol-price').innerText = data.solana.eur.toLocaleString() + " €";
+                document.getElementById('xrp-price').innerText = data.ripple.eur.toFixed(4) + " €";
+                document.getElementById('ada-price').innerText = data.cardano.eur.toFixed(4) + " €";
+            } catch (e) { 
+                console.log("Crypto Error"); 
+            }
+        }
+
+        function updateNews() {
+            const news = ["> ANALYSE : Nouveaux processeurs", "> CYBER : Alerte sécurité DNS", "> ROG : Firmware 1.4.2 déployé", "> SYSTEM : Intégrité 100%"];
+            document.getElementById('news-stream').innerHTML = news.join('<br>');
+        }
+
+        function updateNetworkActivity() {
+            const incoming = (Math.random() * 850 + 50).toFixed(1);
+            const outgoing = (Math.random() * 120 + 10).toFixed(1);
+            document.getElementById('net-in').innerText = incoming;
+            document.getElementById('net-out').innerText = outgoing;
+            document.getElementById('bar-net-in').style.width = (incoming / 10) + "%";
+            document.getElementById('bar-net-out').style.width = (outgoing / 2) + "%";
+        }
+
+        function setPowerMode(mode) {
+            const turbo = document.getElementById('btn-turbo');
+            const eco = document.getElementById('btn-eco');
+            const consoleLog = document.querySelector('.sidebar-right .console-box');
+
+            if (mode === 'TURBO') {
+                turbo.classList.add('btn-turbo-fix');
+                eco.classList.remove('btn-turbo-fix');
+                consoleLog.innerHTML += `<br>> Mode TURBO activé : Fréquences max.`;
+            } else {
+                eco.classList.add('btn-turbo-fix');
+                turbo.classList.remove('btn-turbo-fix');
+                consoleLog.innerHTML += `<br>> Mode ÉCO activé : Économie d'énergie.`;
+            }
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        setInterval(updateClock, 1000);
+        setInterval(updateStats, 2000);
+        setInterval(getRealWeather, 600000);
+        setInterval(getCrypto, 60000);
+        setInterval(updateNetworkActivity, 1500);
+        
+        updateClock(); updateStats(); getRealWeather(); getCrypto(); updateNews(); updateNetworkActivity();
+    </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+@charset "utf-8";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Courier+Prime&display=swap');
+
+/* --- STRUCTURE GLOBALE --- */
+body {
+    margin: 0; padding: 0; min-height: 100vh;
+    display: flex; flex-direction: row;
+    background: #1e1e1e url("images/034.jpg") no-repeat center center fixed;
+    background-size: cover; font-family: 'Orbitron', sans-serif;
+    color: white; overflow-x: hidden;
+}
+
+.page-wrapper { display: flex; width: 100%; justify-content: space-between; }
+
+/* --- SIDEBARS (GAUCHE & DROITE) --- */
+.sidebar {
+    width: 420px; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(25px);
+    padding: 18px; display: flex; flex-direction: column; gap: 10px;
+    height: 100vh; position: sticky; top: 0; box-sizing: border-box; overflow-y: auto;
+}
+.sidebar-left { border-right: 2px solid rgba(0, 255, 204, 0.2); }
+.sidebar-right { border-left: 2px solid rgba(0, 255, 204, 0.2); }
+
+.main-content { 
+    flex: 1; display: flex; flex-direction: column; 
+    align-items: center; padding: 20px; min-width: 1100px; 
+    justify-content: center; 
+}
+
+/* --- WIDGETS DESIGN --- */
+.widget-box { 
+    background: rgba(30, 30, 30, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 12px; border-radius: 10px; 
+}
+.widget-title { 
+    color: #ffffff; font-size: 10px; letter-spacing: 2px; margin-bottom: 8px; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 4px; 
+    text-transform: uppercase; font-weight: bold; 
+}
+
+.stat-row { color: #ddd; font-size: 11px; margin-bottom: 8px; }
+.bar-bg { height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.bar-fill-blue, .bar-fill-red { height: 100%; background: #00ffcc; box-shadow: 0 0 8px #00ffcc; transition: 0.8s; }
+
+/* --- STOCKAGE --- */
+.storage-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+.storage-val {
+    color: #00ffcc;
+    font-family: 'Courier Prime', monospace;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+/* --- PRÉVISIONS MÉTEO --- */
+.forecast-list { display: flex; flex-direction: column; gap: 4px; font-family: 'Courier Prime', monospace; }
+.forecast-row { 
+    display: flex; justify-content: space-between; align-items: center; 
+    font-size: 10px; padding: 4px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #bbb; 
+}
+.forecast-row:last-child { border-bottom: none; }
+
+/* --- CRYPTO & NEWS --- */
+.crypto-row { 
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); 
+    font-family: 'Courier Prime', monospace; 
+}
+.price-tag { color: #00ffcc; font-weight: bold; min-width: 85px; text-align: right; }
+
+.news-ticker {
+    font-family: 'Courier Prime', monospace; font-size: 10px; color: #00ffcc;
+    height: 70px; overflow: hidden; background: rgba(0, 0, 0, 0.3); 
+    padding: 8px; border-radius: 4px;
+}
+
+/* --- BOUTONS & RACCOURCIS --- */
+.shortcut-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.btn-short { 
+    background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); 
+    color: rgba(255, 255, 255, 0.7); padding: 7px; font-size: 9px; text-decoration: none; 
+    text-align: center; border-radius: 4px; text-transform: uppercase; transition: 0.3s; 
+}
+.btn-short:hover { background: #fff; color: #000; box-shadow: 0 0 10px white; }
+.btn-turbo-fix { border-color: rgba(0, 255, 204, 0.4) !important; color: #00ffcc !important; }
+
+/* --- BARRE DE RECHERCHE CENTRALE --- */
+.search-container-center {
+    width: 1075px;
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    border-radius: 8px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 5px;
+}
+
+.google-icon-futuristic {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 0 5px #4285F4) brightness(1.2);
+    transition: transform 0.3s ease;
+}
+
+.search-logo-box a:hover .google-icon-futuristic {
+    transform: rotate(360deg);
+}
+
+.search-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 255, 204, 0.5);
+    color: #fff;
+    font-family: 'Courier Prime', monospace;
+    font-size: 16px;
+    padding: 5px;
+    outline: none;
+    margin-left: 10px;
+}
+
+.search-form input::placeholder {
+    color: rgba(0, 255, 204, 0.3);
+}
+
+.search-form button {
+    background: rgba(0, 255, 204, 0.1);
+    border: 1px solid #00ffcc;
+    color: #00ffcc;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+
+.search-form button:hover {
+    background: #00ffcc;
+    color: #000;
+    box-shadow: 0 0 15px #00ffcc;
+}
+
+/* --- CONTENU CENTRAL --- */
+.weather-header { 
+    width: 1075px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 10px 25px; border-radius: 12px; margin-bottom: 20px; display: flex; 
+    justify-content: space-between; align-items: center; font-size: 13px; color: #00ffcc; 
+}
+
+#clock-container { 
+    text-align: center; width: 1075px; background: rgba(0, 0, 0, 0.6); 
+    border: 1px solid rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 20px; margin-bottom: 20px; 
+}
+#clock { font-size: 90px; color: #fff; font-weight: bold; }
+
+.grid-container { display: grid; grid-template-columns: repeat(4, 250px); gap: 20px; }
+.card { 
+    width: 250px; height: 100px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: 0.4s; 
+}
+.card img { max-width: 180px; max-height: 70px; filter: brightness(0.9); }
+.card:hover { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3); transform: scale(1.02); }
+
+.bottom-status-bar { 
+    width: 1075px; margin-top: 25px; padding: 15px; display: flex; 
+    flex-direction: column; align-items: center; gap: 5px; font-family: 'Orbitron'; 
+    font-size: 11px; letter-spacing: 2px; background: rgba(0, 0, 0, 0.5); 
+    border-radius: 10px; border: 1px solid rgba(0, 255, 204, 0.1); text-transform: uppercase;
+}
+
+.status-ok { color: #00ffcc; font-weight: bold; }
+.console-box { font-family: 'Courier Prime', monospace; font-size: 10px; color: #aaa; line-height: 1.4; }
+
+/* --- STYLES MULTIMÉDIA --- */
+.btn-yt:hover { border-color: #ff0000 !important; box-shadow: 0 0 10px #ff0000; color: #ff0000 !important; }
+.btn-nfx:hover { border-color: #e50914 !important; box-shadow: 0 0 10px #e50914; color: #e50914 !important; }
+.btn-spt:hover { border-color: #1DB954 !important; box-shadow: 0 0 10px #1DB954; color: #1DB954 !important; }
+.btn-twh:hover { border-color: #9146FF !important; box-shadow: 0 0 10px #9146FF; color: #9146FF !important; }
+.btn-amz:hover { border-color: #00A8E1 !important; box-shadow: 0 0 10px #00A8E1; color: #00A8E1 !important; }
+.btn-dis:hover { border-color: #0063e5 !important; box-shadow: 0 0 10px #0063e5; color: #0063e5 !important; }
+
+/* --- ÉTAT ACTIF POUR LES BOUTONS DE MODE --- */
+.btn-short.btn-turbo-fix {
+    background: rgba(0, 255, 204, 0.2) !important;
+    border-color: #00ffcc !important;
+    color: #00ffcc !important;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5) !important;
+}
