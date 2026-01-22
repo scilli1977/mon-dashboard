@@ -49,23 +49,35 @@
 
             <div class="widget-box">
                 <div class="widget-title">ANALYSEUR DE FLUX RÉSEAU</div>
-                <div class="stat-row" style="font-family: 'Courier Prime'; font-size: 10px; color: #00ffcc;">
-                    ENTRANT: <span id="net-in">0.00 Mo/s</span>
-                    <div class="bar-bg"><div id="bar-net-in" class="bar-fill-blue" style="width: 0%;"></div></div>
+                
+                <div class="stat-row" style="flex-direction: column; align-items: flex-start;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; font-family: 'Courier Prime'; font-size: 10px; color: #00ffcc;">
+                        <span>ENTRANT:</span>
+                        <span id="net-in">0.00 Mo/s</span>
+                    </div>
+                    <div class="bar-bg" style="width: 100%;">
+                        <div id="bar-net-in" class="bar-fill-blue" style="width: 0%;"></div>
+                    </div>
                 </div>
-                <div class="stat-row" style="font-family: 'Courier Prime'; font-size: 10px; color: #ffffff; margin-top: 10px;">
-                    SORTANT: <span id="net-out">0.00 Mo/s</span>
-                    <div class="bar-bg"><div id="bar-net-out" class="bar-fill-blue" style="width: 0%; background: #ffffff;"></div></div>
+
+                <div class="stat-row" style="flex-direction: column; align-items: flex-start; margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; font-family: 'Courier Prime'; font-size: 10px; color: #ffffff;">
+                        <span>SORTANT:</span>
+                        <span id="net-out">0.00 Mo/s</span>
+                    </div>
+                    <div class="bar-bg" style="width: 100%;">
+                        <div id="bar-net-out" class="bar-fill-blue" style="width: 0%;"></div>
+                    </div>
                 </div>
             </div>
 
             <div class="widget-box">
                 <div class="widget-title">SÉCURITÉ & PORTS</div>
-                <div class="console-box" style="font-size: 9px;">
-                    > PORT 80: <span class="status-ok">SECURISE</span><br>
-                    > PORT 443: <span class="status-ok">ENCRYPTED</span><br>
-                    > FIREWALL: <span class="status-ok">MONITORING</span><br>
-                    > THREAT LEVEL: <span class="status-ok">ZERO</span>
+                <div class="console-box" id="security-status">
+                    <span style="color: #00ffcc;">> FIREWALL :</span> ACTIF<br>
+                    <span style="color: #00ffcc;">> PORTS SCAN :</span> PROTÉGÉ<br>
+                    <span style="color: #00ffcc;">> VPN :</span> DÉCONNECTÉ<br>
+                    <span style="color: #00ffcc;">> ENCRYPTION :</span> AES-256
                 </div>
             </div>
 
@@ -124,15 +136,34 @@
             </div>
         </div>
 
-        <div class="sidebar sidebar-right">
-            <div class="widget-box">
-                <div class="widget-title">PERFORMANCE LIVE</div>
-                <div class="stat-row">CPU: <span id="cpu-val">--%</span><div class="bar-bg"><div id="cpu-bar" class="bar-fill-blue" style="width: 0%;"></div></div></div>
-                <div class="stat-row">RAM: <span id="ram-val">--%</span><div class="bar-bg"><div id="ram-bar" class="bar-fill-blue" style="width: 0%;"></div></div></div>
-                <div class="stat-row" style="color:#00ffcc; font-family:monospace; margin-top:10px;">
-                    PING: <span id="net-ping">--</span>ms | DL: <span id="net-dl">--</span>Mb | UL: <span id="net-ul">--</span>Mb
-                </div>
-            </div>    
+            <div class="sidebar sidebar-right">
+                <div class="widget-box">
+                    <div class="widget-title">PERFORMANCE LIVE</div>
+                    
+                    <div class="performance-item">
+                        <div class="stat-header">
+                            <span>PROCESSOR (CPU)</span>
+                            <span id="cpu-val">--%</span>
+                        </div>
+                        <div class="bar-bg">
+                            <div id="cpu-bar" class="bar-fill-blue" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="performance-item">
+                        <div class="stat-header">
+                            <span>MEMORY (RAM)</span>
+                            <span id="ram-val">--%</span>
+                        </div>
+                        <div class="bar-bg">
+                            <div id="ram-bar" class="bar-fill-blue" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-row" style="color:#00ffcc; font-family:monospace; margin-top:10px; border-top: 1px solid rgba(0,255,204,0.1); padding-top:10px;">
+                        PING: <span id="net-ping">--</span>ms | DL: <span id="net-dl">--</span>Mb | UL: <span id="net-ul">--</span>Mb
+                    </div>
+                </div>   
 
             <div class="widget-box">
                 <div class="widget-title">ÉNERGIE & THERMIQUE</div>
@@ -146,18 +177,25 @@
 
             <div class="widget-box">
                 <div class="widget-title">Statut Stockage</div>
+                
                 <div class="stat-row">
-                    <div class="storage-info"><span>DISQUE (C:)</span><span class="storage-val">687GB / 1TB</span></div>
-                    <div class="bar-bg"><div class="bar-fill-blue" style="width: 86%;"></div></div>
+                    <span>DISQUE (C:):</span>
+                    <span id="val-disk-c">-- / -- Go</span>
                 </div>
+                <div class="bar-bg"><div id="bar-disk-c" class="bar-fill" style="width: 0%;"></div></div>
+
                 <div class="stat-row">
-                    <div class="storage-info"><span>DONNÉES (D:)</span><span class="storage-val">673GB / 1TB</span></div>
-                    <div class="bar-bg"><div class="bar-fill-blue" style="width: 85%;"></div></div>
+                    <span>DONNÉES (E:):</span>
+                    <span id="val-disk-e">-- / -- Go</span>
                 </div>
-                <div class="stat-row" style="margin-bottom:0;">
-                    <div class="storage-info"><span>DONNÉES (E:)</span><span class="storage-val">32GB / 1TB</span></div>
-                    <div class="bar-bg"><div class="bar-fill-blue" style="width: 3%;"></div></div>
+                <div class="bar-bg"><div id="bar-disk-e" class="bar-fill" style="width: 0%;"></div></div>
+
+                <div class="stat-row">
+                    <span>DONNÉES (F:):</span>
+                    <span id="val-disk-f">-- / -- Go</span>
                 </div>
+                <div class="bar-bg"><div id="bar-disk-f" class="bar-fill" style="width: 0%;"></div></div>
+            </div>
 
             <div class="widget-box">
                 <div class="widget-title">Explorateur</div>
@@ -224,32 +262,26 @@
         </div>
     </div>
 
-    <script>
-    // --- HORLOGE ET DATE ---
+<script>
+    // --- 1. HORLOGE ET DATE ---
     function updateClock() {
         const now = new Date();
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('clock').innerText = now.toLocaleTimeString('fr-FR');
-        document.getElementById('date').innerText = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+        document.getElementById('date').innerText = now.toLocaleDateString('fr-FR', options).toUpperCase();
     }
 
-    // --- STATISTIQUES SYSTÈME (Simulation) ---
+    // --- 2. STATISTIQUES SYSTÈME (Simulation Température/Ping uniquement) ---
     function updateStats() {
-        const cpu = Math.floor(Math.random() * 15) + 5;
-        const ram = Math.floor(Math.random() * 5) + 30;
+        // La température et le ping restent simulés ou peuvent être ajoutés au Python plus tard
         const temp = Math.floor(Math.random() * 5) + 42;
-        
-        document.getElementById('cpu-val').innerText = cpu + "%";
-        document.getElementById('cpu-bar').style.width = cpu + "%";
-        document.getElementById('ram-val').innerText = ram + "%";
-        document.getElementById('ram-bar').style.width = ram + "%";
         document.getElementById('cpu-temp').innerText = temp + "°C";
         
+        // Simulation Ping
         document.getElementById('net-ping').innerText = Math.floor(Math.random() * 5) + 10;
-        document.getElementById('net-dl').innerText = (Math.random() * 50 + 900).toFixed(1);
-        document.getElementById('net-ul').innerText = (Math.random() * 20 + 580).toFixed(1);
     }
 
-    // --- MÉTÉO RÉELLE ---
+    // --- 3. MÉTÉO RÉELLE (API) ---
     async function getRealWeather() {
         try {
             const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=50.41&longitude=4.44&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=10");
@@ -260,7 +292,9 @@
             document.getElementById('center-weather').innerText = Math.round(c.temperature_2m) + "°C";
             document.getElementById('real-feel').innerText = Math.round(c.apparent_temperature) + "°C";
             document.getElementById('real-hum').innerText = c.relative_humidity_2m + "%";
+            
             document.getElementById('hum-bar').style.width = c.relative_humidity_2m + "%";
+            
             document.getElementById('center-details').innerText = `VENT: ${c.wind_speed_10m} KM/H | HUMIDITÉ: ${c.relative_humidity_2m}%`;
             
             const codes = {0:"DÉGAGÉ", 1:"BEAU", 2:"NUAGEUX", 3:"COUVERT", 45:"BROUILLARD", 61:"PLUIE", 71:"NEIGE"};
@@ -272,10 +306,10 @@
                 const day = new Date(date).toLocaleDateString('fr-FR', {weekday: 'short'}).toUpperCase();
                 container.innerHTML += `<div class="forecast-row"><span>${day}</span><span style="color:#00ffcc;">${Math.round(data.daily.temperature_2m_max[i])}° / ${Math.round(data.daily.temperature_2m_min[i])}°</span></div>`;
             });
-        } catch (e) { console.log("Weather Error"); }
+        } catch (e) { console.error("Weather Error"); }
     }
 
-    // --- CRYPTO MARCHÉS ---
+    // --- 4. CRYPTO MARCHÉS ---
     async function getCrypto() {
         try {
             const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano,polkadot&vs_currencies=eur");
@@ -286,43 +320,91 @@
             document.getElementById('sol-price').innerText = data.solana.eur.toLocaleString() + " €";
             document.getElementById('xrp-price').innerText = data.ripple.eur.toFixed(4) + " €";
             document.getElementById('ada-price').innerText = data.cardano.eur.toFixed(4) + " €";
-        } catch (e) { console.log("Crypto Error"); }
+        } catch (e) { console.error("Crypto Error"); }
     }
 
-    // --- ANALYSEUR DE FLUX RÉSEAU ---
+// --- 5. ANALYSEUR SYSTÈME RÉEL (PONT PYTHON : RÉSEAU, DISQUES, CPU, RAM) ---
     async function updateNetworkActivity() {
         try {
-            const response = await fetch('http://localhost:9999');
-            const data = await response.json();
+            const response = await fetch('http://localhost:9999'); 
+            if (!response.ok) throw new Error("Offline");
             
-            // Conversion KB/s (de Python) en MB/s (Mo/s)
-            const downloadMo = (data.in / 1024).toFixed(2);
-            const uploadMo = (data.out / 1024).toFixed(2);
+            const data = await response.json(); 
             
-            // Affichage du texte en Mo/s
-            document.getElementById('net-in').innerText = downloadMo + " Mo/s";
-            document.getElementById('net-out').innerText = uploadMo + " Mo/s";
+            // --- RÉSEAU ---
+            const downloadMo = (data.net.in / 1024).toFixed(2); 
+            const uploadMo = (data.net.out / 1024).toFixed(2);
             
-            // --- RÉGLAGE DES BARRES ---
+            if(document.getElementById('net-in')) document.getElementById('net-in').innerText = downloadMo + " Mo/s";
+            if(document.getElementById('net-out')) document.getElementById('net-out').innerText = uploadMo + " Mo/s";
+            
+            // Stats réseau Sidebar droite
+            if(document.getElementById('net-dl')) document.getElementById('net-dl').innerText = (data.net.in / 1024).toFixed(1);
+            if(document.getElementById('net-ul')) document.getElementById('net-ul').innerText = (data.net.out / 1024).toFixed(1);
 
-            // ENTRANT (Download) : Échelle 50 Mo/s (400 Mbps)
-            // On multiplie par 2 car 50 Mo/s * 2 = 100%
-            document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 2), 100) + "%";
+            if(document.getElementById('bar-net-in')) document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 10), 100) + "%";
+            if(document.getElementById('bar-net-out')) document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 10), 100) + "%";
             
-            // SORTANT (Upload) : Échelle 2.5 Mo/s (environ 20 Mbps)
-            // On multiplie par 40 car 2.5 Mo/s * 40 = 100%
-            // Cela rend la barre sensible même si l'upload est faible (16.6 Mbps)
-            document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 40), 100) + "%";
-            
+            // --- PERFORMANCE RÉELLE (CPU & RAM) ---
+            if (data.performance) {
+                const cpuVal = document.getElementById('cpu-val');
+                const cpuBar = document.getElementById('cpu-bar');
+                const ramVal = document.getElementById('ram-val');
+                const ramBar = document.getElementById('ram-bar');
+
+                if(cpuVal) cpuVal.innerText = data.performance.cpu + "%";
+                if(cpuBar) cpuBar.style.width = data.performance.cpu + "%";
+                if(ramVal) ramVal.innerText = data.performance.ram + "%";
+                if(ramBar) ramBar.style.width = data.performance.ram + "%";
+
+                // Alerte visuelle si charge > 90%
+                if (data.performance.cpu > 90 && cpuVal) cpuVal.classList.add('text-red');
+                else if(cpuVal) cpuVal.classList.remove('text-red');
+            }
+
+            // --- DISQUES (Mise à jour avec % affiché) ---
+            const disks = [
+                { id: 'c', info: data.disks.c },
+                { id: 'e', info: data.disks.e },
+                { id: 'f', info: data.disks.f }
+            ];
+
+            disks.forEach(disk => {
+                const valEl = document.getElementById('val-disk-' + disk.id);
+                const barEl = document.getElementById('bar-disk-' + disk.id);
+                
+                if (valEl && barEl && disk.info) {
+                    // Modification ici : Ajout du pourcentage entre parenthèses
+                    valEl.innerText = disk.info.used.toFixed(1) + " / " + Math.round(disk.info.total) + " Go (" + disk.info.percent + "%)";
+                    barEl.style.width = disk.info.percent + "%";
+                    
+                    // Alerte visuelle stockage plein
+                    if (disk.info.percent >= 90) {
+                        barEl.classList.add('bar-fill-red');
+                        valEl.classList.add('text-red');
+                    } else {
+                        barEl.classList.remove('bar-fill-red');
+                        valEl.classList.remove('text-red');
+                    }
+                }
+            });
+
         } catch (e) {
-            document.getElementById('net-in').innerText = "OFFLINE";
-            document.getElementById('net-out').innerText = "OFFLINE";
-            document.getElementById('bar-net-in').style.width = "0%";
-            document.getElementById('bar-net-out').style.width = "0%";
+            console.log("Erreur Pont Python : Serveur non lancé ou injoignable");
+            // État OFFLINE
+            if(document.getElementById('net-in')) document.getElementById('net-in').innerText = "OFFLINE";
+            if(document.getElementById('net-out')) document.getElementById('net-out').innerText = "OFFLINE";
+            if(document.getElementById('cpu-val')) document.getElementById('cpu-val').innerText = "OFFLINE";
+            if(document.getElementById('ram-val')) document.getElementById('ram-val').innerText = "OFFLINE";
+            
+            ['c','e','f'].forEach(id => {
+                const val = document.getElementById('val-disk-' + id);
+                if(val) val.innerText = "OFFLINE";
+            });
         }
     }
 
-    // --- MODES D'ÉNERGIE ---
+    // --- 6. MODES D'ÉNERGIE ---
     function setPowerMode(mode) {
         const turbo = document.getElementById('btn-turbo');
         const eco = document.getElementById('btn-eco');
@@ -340,20 +422,20 @@
         consoleLog.scrollTop = consoleLog.scrollHeight;
     }
 
-    // --- INITIALISATION ET INTERVALLES ---
+    // --- 7. NEWS STREAM ---
     function updateNews() {
         const news = ["> ANALYSE : Nouveaux processeurs", "> CYBER : Alerte sécurité DNS", "> ROG : Firmware 1.4.2 déployé", "> SYSTEM : Intégrité 100%"];
         document.getElementById('news-stream').innerHTML = news.join('<br>');
     }
 
-    // Lancement des répétitions
+    // --- INITIALISATION DES INTERVALLES ---
     setInterval(updateClock, 1000);
     setInterval(updateStats, 2000);
-    setInterval(getRealWeather, 600000); // 10 minutes
-    setInterval(getCrypto, 60000);       // 1 minute
-    setInterval(updateNetworkActivity, 1000); // 1 seconde pour le réseau réel
+    setInterval(updateNetworkActivity, 1000);
+    setInterval(getCrypto, 60000);       
+    setInterval(getRealWeather, 600000); 
 
-    // Premier lancement au chargement de la page
+    // Premier lancement
     updateClock(); 
     updateStats(); 
     getRealWeather(); 
