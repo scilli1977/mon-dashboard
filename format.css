@@ -38,9 +38,63 @@ body {
     text-transform: uppercase; font-weight: bold; 
 }
 
-.stat-row { color: #ddd; font-size: 11px; margin-bottom: 8px; }
-.bar-bg { height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 4px; }
-.bar-fill-blue, .bar-fill-red { height: 100%; background: #00ffcc; box-shadow: 0 0 8px #00ffcc; transition: 0.8s; }
+/* --- POSITIONNEMENT CPU / RAM (TEXTE AU-DESSUS) --- */
+.performance-item {
+    display: flex;
+    flex-direction: column; /* Force l'empilement vertical */
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between; /* Nom à gauche, % à droite */
+    align-items: center;
+    color: #00ffcc;
+    font-size: 11px;
+}
+
+/* --- LIGNES DE STATS CLASSIQUES --- */
+.stat-row { 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ddd; 
+    font-size: 11px; 
+    margin-bottom: 8px; 
+}
+
+/* --- CONTENEUR DES BARRES --- */
+.bar-bg { 
+    height: 8px; 
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 4px; 
+    overflow: hidden; 
+    margin-top: 2px; 
+    border: 1px solid rgba(0, 255, 204, 0.1);
+    width: 100%;
+}
+
+/* --- REMPLISSAGE DES BARRES --- */
+[class^="bar-fill"], #bar-net-in, #bar-net-out {
+    height: 100%;
+    display: block;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #00ffcc !important; 
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+}
+
+.bar-fill-blue { background: #00ffcc !important; }
+
+#bar-net-out {
+    background: #00ccff !important;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+}
+
+.bar-fill-red {
+    background: linear-gradient(90deg, #ff4444, #ff0000) !important;
+    box-shadow: 0 0 12px #ff0000 !important;
+}
 
 /* --- STOCKAGE --- */
 .storage-info {
@@ -54,6 +108,11 @@ body {
     font-family: 'Courier Prime', monospace;
     font-weight: bold;
     font-size: 10px;
+}
+
+.text-red { 
+    color: #ff4444 !important; 
+    text-shadow: 0 0 5px #ff0000;
 }
 
 /* --- PRÉVISIONS MÉTEO --- */
@@ -86,7 +145,13 @@ body {
     text-align: center; border-radius: 4px; text-transform: uppercase; transition: 0.3s; 
 }
 .btn-short:hover { background: #fff; color: #000; box-shadow: 0 0 10px white; }
-.btn-turbo-fix { border-color: rgba(0, 255, 204, 0.4) !important; color: #00ffcc !important; }
+
+.btn-short.btn-turbo-fix {
+    background: rgba(0, 255, 204, 0.2) !important;
+    border-color: #00ffcc !important;
+    color: #00ffcc !important;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5) !important;
+}
 
 /* --- BARRE DE RECHERCHE CENTRALE --- */
 .search-container-center {
@@ -105,22 +170,11 @@ body {
     gap: 15px;
 }
 
-.search-logo-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-right: 5px;
-}
-
 .google-icon-futuristic {
     width: 24px;
     height: 24px;
     filter: drop-shadow(0 0 5px #4285F4) brightness(1.2);
     transition: transform 0.3s ease;
-}
-
-.search-logo-box a:hover .google-icon-futuristic {
-    transform: rotate(360deg);
 }
 
 .search-form input {
@@ -134,10 +188,6 @@ body {
     padding: 5px;
     outline: none;
     margin-left: 10px;
-}
-
-.search-form input::placeholder {
-    color: rgba(0, 255, 204, 0.3);
 }
 
 .search-form button {
@@ -176,7 +226,12 @@ body {
     width: 250px; height: 100px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); 
     border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: 0.4s; 
 }
-.card img { max-width: 180px; max-height: 70px; filter: brightness(0.9); }
+.card img { 
+    max-width: 180px; 
+    max-height: 70px; 
+    filter: brightness(0.9); 
+    object-fit: contain;
+}
 .card:hover { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3); transform: scale(1.02); }
 
 .bottom-status-bar { 
@@ -187,20 +242,18 @@ body {
 }
 
 .status-ok { color: #00ffcc; font-weight: bold; }
-.console-box { font-family: 'Courier Prime', monospace; font-size: 10px; color: #aaa; line-height: 1.4; }
 
-/* --- STYLES MULTIMÉDIA --- */
+.console-box { 
+    font-family: 'Courier Prime', monospace; 
+    font-size: 10px; 
+    color: #aaa; 
+    line-height: 1.4; 
+}
+
+/* --- HOVER EFFETS MULTIMÉDIA --- */
 .btn-yt:hover { border-color: #ff0000 !important; box-shadow: 0 0 10px #ff0000; color: #ff0000 !important; }
 .btn-nfx:hover { border-color: #e50914 !important; box-shadow: 0 0 10px #e50914; color: #e50914 !important; }
 .btn-spt:hover { border-color: #1DB954 !important; box-shadow: 0 0 10px #1DB954; color: #1DB954 !important; }
 .btn-twh:hover { border-color: #9146FF !important; box-shadow: 0 0 10px #9146FF; color: #9146FF !important; }
 .btn-amz:hover { border-color: #00A8E1 !important; box-shadow: 0 0 10px #00A8E1; color: #00A8E1 !important; }
 .btn-dis:hover { border-color: #0063e5 !important; box-shadow: 0 0 10px #0063e5; color: #0063e5 !important; }
-
-/* --- ÉTAT ACTIF POUR LES BOUTONS DE MODE --- */
-.btn-short.btn-turbo-fix {
-    background: rgba(0, 255, 204, 0.2) !important;
-    border-color: #00ffcc !important;
-    color: #00ffcc !important;
-    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5) !important;
-}
