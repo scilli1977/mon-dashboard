@@ -50,12 +50,12 @@
             <div class="widget-box">
                 <div class="widget-title">ANALYSEUR DE FLUX RÉSEAU</div>
                 <div class="stat-row" style="font-family: 'Courier Prime'; font-size: 10px; color: #00ffcc;">
-                    ENTRANT: <span id="net-in">0.0</span> KB/s
-                    <div class="bar-bg"><div id="bar-net-in" class="bar-fill-blue" style="width: 45%;"></div></div>
+                    ENTRANT: <span id="net-in">0.00 Mo/s</span>
+                    <div class="bar-bg"><div id="bar-net-in" class="bar-fill-blue" style="width: 0%;"></div></div>
                 </div>
                 <div class="stat-row" style="font-family: 'Courier Prime'; font-size: 10px; color: #ffffff; margin-top: 10px;">
-                    SORTANT: <span id="net-out">0.0</span> KB/s
-                    <div class="bar-bg"><div id="bar-net-out" class="bar-fill-blue" style="width: 15%; background: #ffffff; box-shadow: 0 0 8px #ffffff;"></div></div>
+                    SORTANT: <span id="net-out">0.00 Mo/s</span>
+                    <div class="bar-bg"><div id="bar-net-out" class="bar-fill-blue" style="width: 0%; background: #ffffff;"></div></div>
                 </div>
             </div>
 
@@ -225,106 +225,141 @@
     </div>
 
     <script>
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('fr-FR');
-            document.getElementById('date').innerText = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
-        }
+    // --- HORLOGE ET DATE ---
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString('fr-FR');
+        document.getElementById('date').innerText = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+    }
 
-        function updateStats() {
-            const cpu = Math.floor(Math.random() * 15) + 5;
-            const ram = Math.floor(Math.random() * 5) + 30;
-            const temp = Math.floor(Math.random() * 5) + 42;
-            
-            document.getElementById('cpu-val').innerText = cpu + "%";
-            document.getElementById('cpu-bar').style.width = cpu + "%";
-            document.getElementById('ram-val').innerText = ram + "%";
-            document.getElementById('ram-bar').style.width = ram + "%";
-            document.getElementById('cpu-temp').innerText = temp + "°C";
-            
-            document.getElementById('net-ping').innerText = Math.floor(Math.random() * 5) + 10;
-            document.getElementById('net-dl').innerText = (Math.random() * 50 + 900).toFixed(1);
-            document.getElementById('net-ul').innerText = (Math.random() * 20 + 580).toFixed(1);
-        }
-
-        async function getRealWeather() {
-            try {
-                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=50.41&longitude=4.44&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=10");
-                const data = await res.json();
-                const c = data.current;
-                
-                document.getElementById('real-temp').innerText = Math.round(c.temperature_2m) + "°C";
-                document.getElementById('center-weather').innerText = Math.round(c.temperature_2m) + "°C";
-                document.getElementById('real-feel').innerText = Math.round(c.apparent_temperature) + "°C";
-                document.getElementById('real-hum').innerText = c.relative_humidity_2m + "%";
-                document.getElementById('hum-bar').style.width = c.relative_humidity_2m + "%";
-                document.getElementById('center-details').innerText = `VENT: ${c.wind_speed_10m} KM/H | HUMIDITÉ: ${c.relative_humidity_2m}%`;
-                
-                const codes = {0:"DÉGAGÉ", 1:"BEAU", 2:"NUAGEUX", 3:"COUVERT", 45:"BROUILLARD", 61:"PLUIE", 71:"NEIGE"};
-                document.getElementById('real-desc').innerText = codes[c.weather_code] || "STABLE";
-
-                const container = document.getElementById('forecast-container');
-                container.innerHTML = '';
-                data.daily.time.forEach((date, i) => {
-                    const day = new Date(date).toLocaleDateString('fr-FR', {weekday: 'short'}).toUpperCase();
-                    container.innerHTML += `<div class="forecast-row"><span>${day}</span><span style="color:#00ffcc;">${Math.round(data.daily.temperature_2m_max[i])}° / ${Math.round(data.daily.temperature_2m_min[i])}°</span></div>`;
-                });
-            } catch (e) { console.log("Weather Error"); }
-        }
-
-        async function getCrypto() {
-            try {
-                const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano,polkadot&vs_currencies=eur");
-                const data = await res.json();
-                
-                document.getElementById('btc-price').innerText = data.bitcoin.eur.toLocaleString() + " €";
-                document.getElementById('eth-price').innerText = data.ethereum.eur.toLocaleString() + " €";
-                document.getElementById('sol-price').innerText = data.solana.eur.toLocaleString() + " €";
-                document.getElementById('xrp-price').innerText = data.ripple.eur.toFixed(4) + " €";
-                document.getElementById('ada-price').innerText = data.cardano.eur.toFixed(4) + " €";
-            } catch (e) { 
-                console.log("Crypto Error"); 
-            }
-        }
-
-        function updateNews() {
-            const news = ["> ANALYSE : Nouveaux processeurs", "> CYBER : Alerte sécurité DNS", "> ROG : Firmware 1.4.2 déployé", "> SYSTEM : Intégrité 100%"];
-            document.getElementById('news-stream').innerHTML = news.join('<br>');
-        }
-
-        function updateNetworkActivity() {
-            const incoming = (Math.random() * 850 + 50).toFixed(1);
-            const outgoing = (Math.random() * 120 + 10).toFixed(1);
-            document.getElementById('net-in').innerText = incoming;
-            document.getElementById('net-out').innerText = outgoing;
-            document.getElementById('bar-net-in').style.width = (incoming / 10) + "%";
-            document.getElementById('bar-net-out').style.width = (outgoing / 2) + "%";
-        }
-
-        function setPowerMode(mode) {
-            const turbo = document.getElementById('btn-turbo');
-            const eco = document.getElementById('btn-eco');
-            const consoleLog = document.querySelector('.sidebar-right .console-box');
-
-            if (mode === 'TURBO') {
-                turbo.classList.add('btn-turbo-fix');
-                eco.classList.remove('btn-turbo-fix');
-                consoleLog.innerHTML += `<br>> Mode TURBO activé : Fréquences max.`;
-            } else {
-                eco.classList.add('btn-turbo-fix');
-                turbo.classList.remove('btn-turbo-fix');
-                consoleLog.innerHTML += `<br>> Mode ÉCO activé : Économie d'énergie.`;
-            }
-            consoleLog.scrollTop = consoleLog.scrollHeight;
-        }
-
-        setInterval(updateClock, 1000);
-        setInterval(updateStats, 2000);
-        setInterval(getRealWeather, 600000);
-        setInterval(getCrypto, 60000);
-        setInterval(updateNetworkActivity, 1500);
+    // --- STATISTIQUES SYSTÈME (Simulation) ---
+    function updateStats() {
+        const cpu = Math.floor(Math.random() * 15) + 5;
+        const ram = Math.floor(Math.random() * 5) + 30;
+        const temp = Math.floor(Math.random() * 5) + 42;
         
-        updateClock(); updateStats(); getRealWeather(); getCrypto(); updateNews(); updateNetworkActivity();
-    </script>
+        document.getElementById('cpu-val').innerText = cpu + "%";
+        document.getElementById('cpu-bar').style.width = cpu + "%";
+        document.getElementById('ram-val').innerText = ram + "%";
+        document.getElementById('ram-bar').style.width = ram + "%";
+        document.getElementById('cpu-temp').innerText = temp + "°C";
+        
+        document.getElementById('net-ping').innerText = Math.floor(Math.random() * 5) + 10;
+        document.getElementById('net-dl').innerText = (Math.random() * 50 + 900).toFixed(1);
+        document.getElementById('net-ul').innerText = (Math.random() * 20 + 580).toFixed(1);
+    }
+
+    // --- MÉTÉO RÉELLE ---
+    async function getRealWeather() {
+        try {
+            const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=50.41&longitude=4.44&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=10");
+            const data = await res.json();
+            const c = data.current;
+            
+            document.getElementById('real-temp').innerText = Math.round(c.temperature_2m) + "°C";
+            document.getElementById('center-weather').innerText = Math.round(c.temperature_2m) + "°C";
+            document.getElementById('real-feel').innerText = Math.round(c.apparent_temperature) + "°C";
+            document.getElementById('real-hum').innerText = c.relative_humidity_2m + "%";
+            document.getElementById('hum-bar').style.width = c.relative_humidity_2m + "%";
+            document.getElementById('center-details').innerText = `VENT: ${c.wind_speed_10m} KM/H | HUMIDITÉ: ${c.relative_humidity_2m}%`;
+            
+            const codes = {0:"DÉGAGÉ", 1:"BEAU", 2:"NUAGEUX", 3:"COUVERT", 45:"BROUILLARD", 61:"PLUIE", 71:"NEIGE"};
+            document.getElementById('real-desc').innerText = codes[c.weather_code] || "STABLE";
+
+            const container = document.getElementById('forecast-container');
+            container.innerHTML = '';
+            data.daily.time.forEach((date, i) => {
+                const day = new Date(date).toLocaleDateString('fr-FR', {weekday: 'short'}).toUpperCase();
+                container.innerHTML += `<div class="forecast-row"><span>${day}</span><span style="color:#00ffcc;">${Math.round(data.daily.temperature_2m_max[i])}° / ${Math.round(data.daily.temperature_2m_min[i])}°</span></div>`;
+            });
+        } catch (e) { console.log("Weather Error"); }
+    }
+
+    // --- CRYPTO MARCHÉS ---
+    async function getCrypto() {
+        try {
+            const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano,polkadot&vs_currencies=eur");
+            const data = await res.json();
+            
+            document.getElementById('btc-price').innerText = data.bitcoin.eur.toLocaleString() + " €";
+            document.getElementById('eth-price').innerText = data.ethereum.eur.toLocaleString() + " €";
+            document.getElementById('sol-price').innerText = data.solana.eur.toLocaleString() + " €";
+            document.getElementById('xrp-price').innerText = data.ripple.eur.toFixed(4) + " €";
+            document.getElementById('ada-price').innerText = data.cardano.eur.toFixed(4) + " €";
+        } catch (e) { console.log("Crypto Error"); }
+    }
+
+    // --- ANALYSEUR DE FLUX RÉSEAU ---
+    async function updateNetworkActivity() {
+        try {
+            const response = await fetch('http://localhost:9999');
+            const data = await response.json();
+            
+            // Conversion KB/s (de Python) en MB/s (Mo/s)
+            const downloadMo = (data.in / 1024).toFixed(2);
+            const uploadMo = (data.out / 1024).toFixed(2);
+            
+            // Affichage du texte en Mo/s
+            document.getElementById('net-in').innerText = downloadMo + " Mo/s";
+            document.getElementById('net-out').innerText = uploadMo + " Mo/s";
+            
+            // --- RÉGLAGE DES BARRES ---
+
+            // ENTRANT (Download) : Échelle 50 Mo/s (400 Mbps)
+            // On multiplie par 2 car 50 Mo/s * 2 = 100%
+            document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 2), 100) + "%";
+            
+            // SORTANT (Upload) : Échelle 2.5 Mo/s (environ 20 Mbps)
+            // On multiplie par 40 car 2.5 Mo/s * 40 = 100%
+            // Cela rend la barre sensible même si l'upload est faible (16.6 Mbps)
+            document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 40), 100) + "%";
+            
+        } catch (e) {
+            document.getElementById('net-in').innerText = "OFFLINE";
+            document.getElementById('net-out').innerText = "OFFLINE";
+            document.getElementById('bar-net-in').style.width = "0%";
+            document.getElementById('bar-net-out').style.width = "0%";
+        }
+    }
+
+    // --- MODES D'ÉNERGIE ---
+    function setPowerMode(mode) {
+        const turbo = document.getElementById('btn-turbo');
+        const eco = document.getElementById('btn-eco');
+        const consoleLog = document.querySelector('.sidebar-right .console-box');
+
+        if (mode === 'TURBO') {
+            turbo.classList.add('btn-turbo-fix');
+            eco.classList.remove('btn-turbo-fix');
+            consoleLog.innerHTML += `<br>> Mode TURBO activé : Fréquences max.`;
+        } else {
+            eco.classList.add('btn-turbo-fix');
+            turbo.classList.remove('btn-turbo-fix');
+            consoleLog.innerHTML += `<br>> Mode ÉCO activé : Économie d'énergie.`;
+        }
+        consoleLog.scrollTop = consoleLog.scrollHeight;
+    }
+
+    // --- INITIALISATION ET INTERVALLES ---
+    function updateNews() {
+        const news = ["> ANALYSE : Nouveaux processeurs", "> CYBER : Alerte sécurité DNS", "> ROG : Firmware 1.4.2 déployé", "> SYSTEM : Intégrité 100%"];
+        document.getElementById('news-stream').innerHTML = news.join('<br>');
+    }
+
+    // Lancement des répétitions
+    setInterval(updateClock, 1000);
+    setInterval(updateStats, 2000);
+    setInterval(getRealWeather, 600000); // 10 minutes
+    setInterval(getCrypto, 60000);       // 1 minute
+    setInterval(updateNetworkActivity, 1000); // 1 seconde pour le réseau réel
+
+    // Premier lancement au chargement de la page
+    updateClock(); 
+    updateStats(); 
+    getRealWeather(); 
+    getCrypto(); 
+    updateNews(); 
+    updateNetworkActivity();
+</script>
 </body>
 </html>
