@@ -170,11 +170,25 @@ body {
     gap: 15px;
 }
 
+/* LOGO GOOGLE MODERNE ET DESIGN (VERSION CYBER NEON) */
 .google-icon-futuristic {
-    width: 24px;
-    height: 24px;
-    filter: drop-shadow(0 0 5px #4285F4) brightness(1.2);
-    transition: transform 0.3s ease;
+    width: 45px; /* Taille augmentée pour apprécier les détails du logo futuriste */
+    height: 45px;
+    object-fit: contain;
+    
+    /* Boost des couleurs : saturation et luminosité pour l'effet néon */
+    /* On garde une lueur (glow) qui mélange le bleu et le turquoise */
+    filter: saturate(1.8) brightness(1.2) drop-shadow(0 0 8px rgba(0, 255, 204, 0.5));
+    
+    /* Transition fluide avec effet de rebond (cubic-bezier) */
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), filter 0.3s ease;
+}
+
+/* Animation de rotation 360° et surbrillance au survol */
+.search-logo-box:hover .google-icon-futuristic {
+    transform: rotate(360deg) scale(1.15);
+    /* Le logo devient encore plus vif lors de la rotation */
+    filter: saturate(2.2) brightness(1.4) drop-shadow(0 0 15px rgba(0, 255, 204, 0.8));
 }
 
 .search-form input {
@@ -250,10 +264,276 @@ body {
     line-height: 1.4; 
 }
 
-/* --- HOVER EFFETS MULTIMÉDIA --- */
-.btn-yt:hover { border-color: #ff0000 !important; box-shadow: 0 0 10px #ff0000; color: #ff0000 !important; }
-.btn-nfx:hover { border-color: #e50914 !important; box-shadow: 0 0 10px #e50914; color: #e50914 !important; }
-.btn-spt:hover { border-color: #1DB954 !important; box-shadow: 0 0 10px #1DB954; color: #1DB954 !important; }
-.btn-twh:hover { border-color: #9146FF !important; box-shadow: 0 0 10px #9146FF; color: #9146FF !important; }
-.btn-amz:hover { border-color: #00A8E1 !important; box-shadow: 0 0 10px #00A8E1; color: #00A8E1 !important; }
-.btn-dis:hover { border-color: #0063e5 !important; box-shadow: 0 0 10px #0063e5; color: #0063e5 !important; }
+/* --- ANIMATION DU LOGO GOOGLE FUTURISTE --- */
+.google-icon-futuristic {
+    width: 40px; /* Ajuste la taille selon tes besoins */
+    height: auto;
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    filter: drop-shadow(0 0 5px rgba(0, 255, 204, 0.5));
+    vertical-align: middle;
+}
+
+/* Animation de rotation quand on survole la boîte du logo ou le logo lui-même */
+.search-logo-box:hover .google-icon-futuristic {
+    transform: rotate(360deg) scale(1.2);
+    filter: drop-shadow(0 0 15px #00ffcc);
+}
+
+/* Optionnel : Une petite pulsation constante pour rappeler le style ROG */
+.google-icon-futuristic {
+    animation: iconPulse 4s infinite ease-in-out;
+}
+
+@keyframes iconPulse {
+    0% { filter: drop-shadow(0 0 2px rgba(0, 255, 204, 0.2)); }
+    50% { filter: drop-shadow(0 0 8px rgba(0, 255, 204, 0.6)); }
+    100% { filter: drop-shadow(0 0 2px rgba(0, 255, 204, 0.2)); }
+}
+
+/* --- CENTRE MULTIMÉDIA : STYLES DYNAMIQUES AVANCÉS --- */
+
+/* YouTube */
+.btn-yt:hover { 
+    border-color: #ff0000 !important; 
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(255, 0, 0, 0.2), rgba(150, 0, 0, 0.2));
+}
+
+/* Netflix */
+.btn-nfx:hover { 
+    border-color: #e50914 !important; 
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(229, 9, 20, 0.2), rgba(0, 0, 0, 0.3));
+}
+
+/* Spotify */
+.btn-spt:hover { 
+    border-color: #1DB954 !important; 
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(29, 185, 84, 0.2), rgba(0, 0, 0, 0.3));
+}
+
+/* Twitch */
+.btn-twh:hover { 
+    border-color: #9146FF !important; 
+    box-shadow: 0 0 15px rgba(145, 70, 255, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(145, 70, 255, 0.2), rgba(60, 20, 120, 0.2));
+}
+
+/* Amazon Prime */
+.btn-amz:hover { 
+    border-color: #00A8E1 !important; 
+    box-shadow: 0 0 15px rgba(0, 168, 225, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 168, 225, 0.2), rgba(0, 50, 100, 0.2));
+}
+
+/* Disney+ */
+.btn-dis:hover { 
+    border-color: #0063e5 !important; 
+    box-shadow: 0 0 15px rgba(0, 99, 229, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 99, 229, 0.2), rgba(2, 6, 25, 0.3));
+}
+
+/* Steam */
+.btn-stm:hover { 
+    border-color: #66c0f4 !important; 
+    box-shadow: 0 0 15px rgba(102, 192, 244, 0.5); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(23, 26, 33, 0.4), rgba(102, 192, 244, 0.2));
+}
+
+/* Canva */
+.btn-canva:hover { 
+    border-color: #00C4CC !important; 
+    box-shadow: 0 0 15px rgba(125, 42, 232, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 196, 204, 0.2), rgba(125, 42, 232, 0.2));
+}
+
+/* TikTok */
+.btn-tk:hover { 
+    border-color: #00f2ea !important; 
+    box-shadow: -3px 0 12px #00f2ea, 3px 0 12px #ff0050; 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 242, 234, 0.15), rgba(255, 0, 80, 0.15));
+}
+
+/* Discord */
+.btn-discord:hover { 
+    border-color: #5865F2 !important; 
+    box-shadow: 0 0 15px rgba(88, 101, 242, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(88, 101, 242, 0.2), rgba(40, 45, 100, 0.2));
+}
+
+/* HBO Max (Déjà présent mais harmonisé) */
+.btn-hbo:hover { 
+    border-color: #0043F9 !important; 
+    box-shadow: 0 0 15px rgba(0, 67, 249, 0.8); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 67, 249, 0.2), rgba(154, 55, 255, 0.2));
+}
+
+/* --- EXPLORATEUR : EFFETS DYNAMIQUES (TEXTE BLANC AU SURVOL) --- */
+
+/* Documents */
+.btn-doc:hover { 
+    border-color: #0078d4 !important; 
+    box-shadow: 0 0 15px rgba(0, 120, 212, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 120, 212, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Téléchargements */
+.btn-dl:hover { 
+    border-color: #2ecc71 !important; 
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(46, 204, 113, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Images */
+.btn-img:hover { 
+    border-color: #f1c40f !important; 
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(241, 196, 15, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Vidéos */
+.btn-vid:hover { 
+    border-color: #9b59b6 !important; 
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(155, 89, 182, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Musique */
+.btn-mus:hover { 
+    border-color: #e91e63 !important; 
+    box-shadow: 0 0 15px rgba(233, 30, 99, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(233, 30, 99, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Vuze */
+.btn-vuze:hover { 
+    border-color: #c0392b !important; 
+    box-shadow: 0 0 15px rgba(192, 57, 43, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(192, 57, 43, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Programmes */
+.btn-prog:hover { 
+    border-color: #ecf0f1 !important; 
+    box-shadow: 0 0 15px rgba(236, 240, 241, 0.4); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(236, 240, 241, 0.2), rgba(0, 0, 0, 0.4));
+}
+
+/* Disque C */
+.btn-disk:hover { 
+    border-color: #00ffcc !important; 
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 255, 204, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* --- GESTION SYSTÈME : STYLES DYNAMIQUES --- */
+
+/* Paramètres & Apps (Bleu Windows) */
+.btn-settings:hover, .btn-apps:hover { 
+    border-color: #0078d7 !important; 
+    box-shadow: 0 0 15px rgba(0, 120, 215, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 120, 215, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Écran & Graphiques (Bleu Cyan) */
+.btn-display:hover, .btn-gpu:hover { 
+    border-color: #00bcf2 !important; 
+    box-shadow: 0 0 15px rgba(0, 188, 242, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 188, 242, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Son & Mélangeur (Violet) */
+.btn-sound:hover, .btn-vol:hover { 
+    border-color: #8764b8 !important; 
+    box-shadow: 0 0 15px rgba(135, 100, 184, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(135, 100, 184, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Thèmes & Bluetooth (Bleu Indigo) */
+.btn-theme:hover, .btn-bt:hover { 
+    border-color: #4982b8 !important; 
+    box-shadow: 0 0 15px rgba(73, 130, 184, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(73, 130, 184, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Réseau Wi-Fi & Ethernet (Vert Émeraude) */
+.btn-eth:hover, .btn-wifi:hover { 
+    border-color: #107c10 !important; 
+    box-shadow: 0 0 15px rgba(16, 124, 16, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(16, 124, 16, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Sécurité & Updates (Orange / Jaune) */
+.btn-secu:hover, .btn-update:hover { 
+    border-color: #ff8c00 !important; 
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(255, 140, 0, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Stockage & Souris (Gris Aluminium) */
+.btn-hd:hover, .btn-mouse:hover { 
+    border-color: #a0a0a0 !important; 
+    box-shadow: 0 0 15px rgba(160, 160, 160, 0.5); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(160, 160, 160, 0.2), rgba(0, 0, 0, 0.4));
+}
+
+/* --- MAINTENANCE : EFFETS DYNAMIQUES --- */
+
+/* Dépannage (Rouge/Orange Alerte) */
+.btn-fix:hover { 
+    border-color: #ff4b2b !important; 
+    box-shadow: 0 0 15px rgba(255, 75, 43, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(255, 75, 43, 0.3), rgba(255, 147, 15, 0.2));
+}
+
+/* Récupérer (Jaune/Ambre) */
+.btn-recov:hover { 
+    border-color: #fbc02d !important; 
+    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(251, 192, 45, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Optimiser (Vert Émeraude) */
+.btn-opti:hover { 
+    border-color: #00ffcc !important; 
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 255, 204, 0.3), rgba(0, 0, 0, 0.4));
+}
+
+/* Infos PC (Bleu Cyan) */
+.btn-info:hover { 
+    border-color: #00d2ff !important; 
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.6); 
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(0, 210, 255, 0.3), rgba(0, 0, 0, 0.4));
+}
