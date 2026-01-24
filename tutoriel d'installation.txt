@@ -1,0 +1,149 @@
+A - Extraire le fichier Mozilla Firefox page accueil.rar
+--------------------------------------------------------
+
+
+
+B - Placer le dossier dans C:\Program Files
+-------------------------------------------
+
+
+C - Voici le code pour executé l'ANALYSEUR DE FLUX RÉSEAU, DISQUE , CPU , RAM EN TEMPS REEL (NETWORK_BRIDGE.PYW):
+-----------------------------------------------------------------------------------------------------------------
+
+1. Prendre le fichier 
+---------------------
+Allez dans votre dossier où se trouve network_bridge.pyw 
+
+    C:\Program Files\Mozilla Firefox page accueil\
+
+2. Créer le lancement automatique
+----------------------------------
+Pour que Windows le lance tout seul à chaque allumage :
+
+    Faites un clic droit sur votre fichier network_bridge.pyw et choisissez Créer un raccourci.
+
+    Appuyez sur les touches Windows + R de votre clavier.
+
+    Dans la petite fenêtre qui s'ouvre, tapez exactement : shell:startup et faites Entrée.
+
+    Un dossier s'ouvre (c'est le dossier de démarrage de Windows). Coupez/Collez le raccourci que vous venez de créer à l'intérieur de ce dossier.
+
+3. Comment l'arrêter si besoin ?
+--------------------------------
+Comme la fenêtre est cachée, si vous voulez arrêter le script un jour :
+
+    Appuyez sur CTRL + SHIFT + ESC pour ouvrir le Gestionnaire des tâches.
+
+    Cherchez "pythonw.exe" dans l'onglet "Détails" ou "Processus".
+
+    Faites un clic droit et Fin de tâche.
+
+
+     
+D - Pour changé les valeurs en cas d'augmentation de la connexion si déménagement START.HTML parti javascript en bas de page (La connexion est réglé a 500 Mo/s):
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Petite astuce pour le futur :
+
+Actuellement, le code multiplie la valeur par 10 (downloadMo * 10), ce qui signifie qu'à 10 Mo/s la barre est à 100%. Pour que le 100% corresponde à 1000 Mo/s, il faut multiplier par 0.1 (ou diviser par 10).
+
+
+            // --- RÉSEAU ---
+            const downloadMo = (data.net.in / 1024).toFixed(2); 
+            const uploadMo = (data.net.out / 1024).toFixed(2);
+            
+            if(document.getElementById('net-in')) document.getElementById('net-in').innerText = downloadMo + " Mo/s";
+            if(document.getElementById('net-out')) document.getElementById('net-out').innerText = uploadMo + " Mo/s";
+            
+            // Stats réseau Sidebar droite
+            if(document.getElementById('net-dl')) document.getElementById('net-dl').innerText = (data.net.in / 1024).toFixed(1);
+            if(document.getElementById('net-ul')) document.getElementById('net-ul').innerText = (data.net.out / 1024).toFixed(1);
+
+            if(document.getElementById('bar-net-in')) document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 10), 100) + "%";
+            if(document.getElementById('bar-net-out')) document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 10), 100) + "%";
+
+Modification a apporté :
+
+
+// Remplacer le multiplicateur 10 par 0.1 pour une échelle sur 1000 Mo/s
+
+             if(document.getElementById('bar-net-in')) document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 0.1), 100) + "%";
+             if(document.getElementById('bar-net-out')) document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 0.1), 100) + "%";
+
+
+
+E - Pour la gestion des disque dur a affiché :
+-----------------------------------------------
+Moi j'ai trois disque dur C , E , F qui sont repris dans ses lignes de codes javascript
+
+
+            // --- DISQUES (Mise à jour avec % affiché) ---
+            const disks = [
+                { id: 'c', info: data.disks.c },
+                { id: 'e', info: data.disks.e },
+                { id: 'f', info: data.disks.f }
+            ];
+
+            disks.forEach(disk => {
+                const valEl = document.getElementById('val-disk-' + disk.id);
+                const barEl = document.getElementById('bar-disk-' + disk.id);
+                
+                if (valEl && barEl && disk.info) {
+                    // Modification ici : Ajout du pourcentage entre parenthèses
+                    valEl.innerText = disk.info.used.toFixed(1) + " / " + Math.round(disk.info.total) + " Go (" + disk.info.percent + "%)";
+                    barEl.style.width = disk.info.percent + "%";
+                    
+                    // Alerte visuelle stockage plein
+                    if (disk.info.percent >= 90) {
+                        barEl.classList.add('bar-fill-red');
+                        valEl.classList.add('text-red');
+                    } else {
+                        barEl.classList.remove('bar-fill-red');
+                        valEl.classList.remove('text-red');
+                    }
+                }
+            });
+
+1 - modifié les lettres de vos disque dur pour que sa correspond 
+----------------------------------------------------------------
+
+exemple si j'ai un disque G changé la valeur :   { id: 'g', info: data.disks.g }   
+
+2 - Enlevé une parti du code si vous avez que deux disque dur 
+-------------------------------------------------------------
+
+exemple enlevé une ligne de code :       { id: 'c', info: data.disks.c },
+
+                                         { id: 'g', info: data.disks.g },
+
+3 - changé les lignes de codes pour cette parti :
+-------------------------------------------------
+
+Meme etapes qu'au dessus si un disque enlevé les autre et renomer en fonction des lettres de vos disque dur.
+
+            <div class="widget-box">
+                <div class="widget-title">Statut Stockage</div>
+                
+                <div class="stat-row">
+                    <span>DISQUE (C:):</span>
+                    <span id="val-disk-c">-- / -- Go</span>
+                </div>
+                <div class="bar-bg"><div id="bar-disk-c" class="bar-fill" style="width: 0%;"></div></div>
+
+                <div class="stat-row">
+                    <span>DONNÉES (E:):</span>
+                    <span id="val-disk-e">-- / -- Go</span>
+                </div>
+                <div class="bar-bg"><div id="bar-disk-e" class="bar-fill" style="width: 0%;"></div></div>
+
+                <div class="stat-row">
+                    <span>DONNÉES (F:):</span>
+                    <span id="val-disk-f">-- / -- Go</span>
+                </div>
+                <div class="bar-bg"><div id="bar-disk-f" class="bar-fill" style="width: 0%;"></div></div>
+            </div>
+
+                
+
+
+
+

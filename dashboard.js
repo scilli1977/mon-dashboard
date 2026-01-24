@@ -8,11 +8,8 @@
 
     // --- 2. STATISTIQUES SYSTÈME (Simulation Température/Ping uniquement) ---
     function updateStats() {
-        // La température et le ping restent simulés ou peuvent être ajoutés au Python plus tard
         const temp = Math.floor(Math.random() * 5) + 42;
         document.getElementById('cpu-temp').innerText = temp + "°C";
-        
-        // Simulation Ping
         document.getElementById('net-ping').innerText = Math.floor(Math.random() * 5) + 10;
     }
 
@@ -27,9 +24,7 @@
             document.getElementById('center-weather').innerText = Math.round(c.temperature_2m) + "°C";
             document.getElementById('real-feel').innerText = Math.round(c.apparent_temperature) + "°C";
             document.getElementById('real-hum').innerText = c.relative_humidity_2m + "%";
-            
             document.getElementById('hum-bar').style.width = c.relative_humidity_2m + "%";
-            
             document.getElementById('center-details').innerText = `VENT: ${c.wind_speed_10m} KM/H | HUMIDITÉ: ${c.relative_humidity_2m}%`;
             
             const codes = {0:"DÉGAGÉ", 1:"BEAU", 2:"NUAGEUX", 3:"COUVERT", 45:"BROUILLARD", 61:"PLUIE", 71:"NEIGE"};
@@ -58,93 +53,69 @@
         } catch (e) { console.error("Crypto Error"); }
     }
 
-// --- 5. ANALYSEUR SYSTÈME RÉEL (PONT PYTHON : RÉSEAU, DISQUES, CPU, RAM) ---
+    // --- 5. ANALYSEUR SYSTÈME RÉEL (PONT PYTHON) ---
     async function updateNetworkActivity() {
         try {
             const response = await fetch('http://localhost:9999'); 
             if (!response.ok) throw new Error("Offline");
-            
             const data = await response.json(); 
             
-            // --- RÉSEAU ---
             const downloadMo = (data.net.in / 1024).toFixed(2); 
             const uploadMo = (data.net.out / 1024).toFixed(2);
             
             if(document.getElementById('net-in')) document.getElementById('net-in').innerText = downloadMo + " Mo/s";
             if(document.getElementById('net-out')) document.getElementById('net-out').innerText = uploadMo + " Mo/s";
-            
-            // Stats réseau Sidebar droite
             if(document.getElementById('net-dl')) document.getElementById('net-dl').innerText = (data.net.in / 1024).toFixed(1);
             if(document.getElementById('net-ul')) document.getElementById('net-ul').innerText = (data.net.out / 1024).toFixed(1);
-
             if(document.getElementById('bar-net-in')) document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 10), 100) + "%";
             if(document.getElementById('bar-net-out')) document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 10), 100) + "%";
             
-            // --- PERFORMANCE RÉELLE (CPU & RAM) ---
             if (data.performance) {
                 const cpuVal = document.getElementById('cpu-val');
                 const cpuBar = document.getElementById('cpu-bar');
                 const ramVal = document.getElementById('ram-val');
                 const ramBar = document.getElementById('ram-bar');
-
                 if(cpuVal) cpuVal.innerText = data.performance.cpu + "%";
                 if(cpuBar) cpuBar.style.width = data.performance.cpu + "%";
                 if(ramVal) ramVal.innerText = data.performance.ram + "%";
                 if(ramBar) ramBar.style.width = data.performance.ram + "%";
-
-                // Alerte visuelle si charge > 90%
                 if (data.performance.cpu > 90 && cpuVal) cpuVal.classList.add('text-red');
                 else if(cpuVal) cpuVal.classList.remove('text-red');
             }
 
-            // --- DISQUES (Mise à jour avec % affiché) ---
-            const disks = [
-                { id: 'c', info: data.disks.c },
-                { id: 'e', info: data.disks.e },
-                { id: 'f', info: data.disks.f }
-            ];
-
+            const disks = [{ id: 'c', info: data.disks.c }, { id: 'e', info: data.disks.e }, { id: 'f', info: data.disks.f }];
             disks.forEach(disk => {
                 const valEl = document.getElementById('val-disk-' + disk.id);
                 const barEl = document.getElementById('bar-disk-' + disk.id);
-                
                 if (valEl && barEl && disk.info) {
-                    // Modification ici : Ajout du pourcentage entre parenthèses
                     valEl.innerText = disk.info.used.toFixed(1) + " / " + Math.round(disk.info.total) + " Go (" + disk.info.percent + "%)";
                     barEl.style.width = disk.info.percent + "%";
-                    
-                    // Alerte visuelle stockage plein
-                    if (disk.info.percent >= 90) {
-                        barEl.classList.add('bar-fill-red');
-                        valEl.classList.add('text-red');
-                    } else {
-                        barEl.classList.remove('bar-fill-red');
-                        valEl.classList.remove('text-red');
-                    }
+                    if (disk.info.percent >= 90) { barEl.classList.add('bar-fill-red'); valEl.classList.add('text-red'); }
+                    else { barEl.classList.remove('bar-fill-red'); valEl.classList.remove('text-red'); }
                 }
             });
-
         } catch (e) {
-            console.log("Erreur Pont Python : Serveur non lancé ou injoignable");
-            // État OFFLINE
+            console.log("Erreur Pont Python : Serveur non lancé");
             if(document.getElementById('net-in')) document.getElementById('net-in').innerText = "OFFLINE";
             if(document.getElementById('net-out')) document.getElementById('net-out').innerText = "OFFLINE";
             if(document.getElementById('cpu-val')) document.getElementById('cpu-val').innerText = "OFFLINE";
             if(document.getElementById('ram-val')) document.getElementById('ram-val').innerText = "OFFLINE";
-            
-            ['c','e','f'].forEach(id => {
-                const val = document.getElementById('val-disk-' + id);
-                if(val) val.innerText = "OFFLINE";
-            });
+            ['c','e','f'].forEach(id => { if(document.getElementById('val-disk-' + id)) document.getElementById('val-disk-' + id).innerText = "OFFLINE"; });
         }
     }
 
-    // --- 6. MODES D'ÉNERGIE ---
+    // --- 6. FONCTION D'OUVERTURE DE DOSSIER (VIA PYTHON) ---
+    function openFolder(path) {
+        console.log("Demande d'ouverture locale : " + path);
+        fetch(`http://localhost:9999/open?path=${encodeURIComponent(path)}`)
+            .catch(err => console.error("Erreur pont lors de l'ouverture :", err));
+    }
+
+    // --- 7. MODES D'ÉNERGIE ---
     function setPowerMode(mode) {
         const turbo = document.getElementById('btn-turbo');
         const eco = document.getElementById('btn-eco');
         const consoleLog = document.querySelector('.sidebar-right .console-box');
-
         if (mode === 'TURBO') {
             turbo.classList.add('btn-turbo-fix');
             eco.classList.remove('btn-turbo-fix');
@@ -157,70 +128,64 @@
         consoleLog.scrollTop = consoleLog.scrollHeight;
     }
 
-    // --- 7. NEWS STREAM ---
+    // --- 8. NEWS STREAM ---
     function updateNews() {
         const news = ["> ANALYSE : Nouveaux processeurs", "> CYBER : Alerte sécurité DNS", "> ROG : Firmware 1.4.2 déployé", "> SYSTEM : Intégrité 100%"];
         document.getElementById('news-stream').innerHTML = news.join('<br>');
     }
 
-// --- 8. EFFET SONORE CYBER (MINIMALISTE & DISCRET) ---
-let audioCtx = null;
-
-function playCyberSound() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-
-    oscillator.type = 'sine'; // Son pur et doux
-    oscillator.frequency.setValueAtTime(1500, audioCtx.currentTime); 
-    
-    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.01); // Volume à 5%
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05); 
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.05);
-}
+    // --- 9. EFFET SONORE CYBER ---
+    let audioCtx = null;
+    function playCyberSound() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(1500, audioCtx.currentTime); 
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05); 
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.05);
+    }
 
 // --- INITIALISATION DES ÉVÉNEMENTS ---
 document.addEventListener('DOMContentLoaded', () => {
-    // A. Son pour les cartes images (Google, Facebook, etc.)
+    // A. Interception des clics pour l'Explorateur (C:, E:, F:)
+    document.body.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link) {
+            const href = link.getAttribute('href');
+            // Si le lien commence par une lettre de lecteur Windows
+            if (href && (href.startsWith('C:') || href.startsWith('E:') || href.startsWith('F:'))) {
+                e.preventDefault(); // Empêche la navigation navigateur
+                openFolder(href);
+            }
+        }
+    });
+
     const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.onmouseenter = () => playCyberSound();
-    });
+    cards.forEach(card => card.onmouseenter = () => playCyberSound());
 
-    // B. Son pour les raccourcis texte (Sidebar)
     const buttons = document.querySelectorAll('.btn-short');
-    buttons.forEach(btn => {
-        btn.onmouseenter = () => playCyberSound();
-    });
+    buttons.forEach(btn => btn.onmouseenter = () => playCyberSound());
 
-    // C. Son pour le bouton EXÉCUTER de la recherche
     const execBtn = document.querySelector('.search-form button');
-    if (execBtn) {
-        execBtn.onmouseenter = () => playCyberSound();
-    }
+    if (execBtn) execBtn.onmouseenter = () => playCyberSound();
 
-    // Activation de l'audio au premier clic sur la page
     window.onclick = () => {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         audioCtx.resume();
-        console.log("Audio Engine Ready");
     };
 
-    // Lancement des intervalles
     setInterval(updateClock, 1000);
     setInterval(updateStats, 2000);
     setInterval(updateNetworkActivity, 1000);
     setInterval(getCrypto, 60000);
     setInterval(getRealWeather, 600000);
 
-    // Initialisation immédiate
     updateClock(); updateStats(); getRealWeather(); getCrypto(); updateNews(); updateNetworkActivity();
 });

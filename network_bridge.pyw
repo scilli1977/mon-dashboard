@@ -2,6 +2,8 @@ import psutil
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import os
+import urllib.parse
 
 # --- CONFIGURATION INITIALE ---
 # Initialisation des compteurs au lancement du script pour le calcul du débit réseau
@@ -12,6 +14,28 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global last_net_stats, last_time
         
+        # --- GESTION DE L'OUVERTURE DE L'EXPLORATEUR ---
+        if self.path.startswith('/open'):
+            try:
+                # Récupère le chemin après ?path=
+                query = urllib.parse.urlparse(self.path).query
+                params = urllib.parse.parse_qs(query)
+                path_to_open = params.get('path', [None])[0]
+                
+                if path_to_open:
+                    os.startfile(path_to_open)
+                    self.send_response(200)
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(b"OK")
+                    return
+            except Exception as e:
+                print(f"Erreur lors de l'ouverture du dossier : {e}")
+                self.send_response(500)
+                self.end_headers()
+                return
+
+        # --- GESTION DES STATISTIQUES (Code original) ---
         # Gestion du temps pour un calcul de débit précis
         current_time = time.time()
         interval = current_time - last_time
@@ -35,12 +59,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             try:
                 usage = psutil.disk_usage(path)
                 return {
-                    "percent": usage.percent,  # Nouvelle donnée envoyée au HTML
-                    "used": round(usage.used / (1024**3), 1), # Go utilisés
-                    "total": round(usage.total / (1024**3), 0) # Go total
+                    "percent": usage.percent,
+                    "used": round(usage.used / (1024**3), 1),
+                    "total": round(usage.total / (1024**3), 0)
                 }
             except Exception:
-                # En cas de disque non monté ou erreur d'accès
                 return {"percent": 0, "used": 0, "total": 0}
 
         # --- PRÉPARATION DES DONNÉES JSON ---
@@ -83,7 +106,7 @@ if __name__ == "__main__":
     PORT = 9999
     try:
         server = HTTPServer(('localhost', PORT), DashboardHandler)
-        print(f">>> PONT SYSTÈME ROG [PERF + DISQUES] OPÉRATIONNEL SUR LE PORT {PORT}")
+        print(f">>> PONT SYSTÈME ROG [PERF + DISQUES + EXPLORATEUR] OPÉRATIONNEL SUR LE PORT {PORT}")
         print(">>> Affichage en GIGAOCTETS et POURCENTAGES activé.")
         print(">>> En attente de requêtes (CTRL+C pour arrêter)...")
         server.serve_forever()
