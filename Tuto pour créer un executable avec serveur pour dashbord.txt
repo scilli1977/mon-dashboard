@@ -1,0 +1,134 @@
+Pour que ça fonctionne à coup sûr, on va transformer ton script en un vrai fichier exécutable (.exe). Comme ça, plus besoin d'installer Python.
+
+Voici la marche à suivre de A à Z :
+
+
+1. Préparer le script final
+
+Crée un nouveau fichier texte, nomme-le rog_bridge.py et colle ce code (ton code original, stabilisé pour l'exécutable) :
+
+Python:
+
+import psutil
+import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
+import os
+import urllib.parse
+import sys
+
+# --- CONFIGURATION INITIALE ---
+last_net_stats = psutil.net_io_counters()
+last_time = time.time()
+
+class DashboardHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        global last_net_stats, last_time
+        
+        if self.path.startswith('/open'):
+            try:
+                query = urllib.parse.urlparse(self.path).query
+                params = urllib.parse.parse_qs(query)
+                path_to_open = params.get('path', [None])[0]
+                if path_to_open:
+                    os.startfile(path_to_open)
+                    self.send_response(200)
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(b"OK")
+                    return
+            except Exception:
+                self.send_response(500)
+                self.end_headers()
+                return
+
+        current_time = time.time()
+        interval = max(0.1, current_time - last_time)
+        current_net = psutil.net_io_counters()
+        
+        bytes_in = (current_net.bytes_recv - last_net_stats.bytes_recv) / interval
+        bytes_out = (current_net.bytes_sent - last_net_stats.bytes_sent) / interval
+        
+        cpu_usage = psutil.cpu_percent(interval=None)
+        ram_usage = psutil.virtual_memory().percent
+
+        def get_disk_info(path):
+            try:
+                usage = psutil.disk_usage(path)
+                return {
+                    "percent": usage.percent,
+                    "used": round(usage.used / (1024**3), 1),
+                    "total": round(usage.total / (1024**3), 0)
+                }
+            except: return {"percent": 0, "used": 0, "total": 0}
+
+        data = {
+            "net": {"in": round(bytes_in / 1024, 2), "out": round(bytes_out / 1024, 2)},
+            "performance": {"cpu": cpu_usage, "ram": ram_usage},
+            "disks": {
+                "c": get_disk_info('C:'),
+                "e": get_disk_info('E:'),
+                "f": get_disk_info('F:')
+            }
+        }
+
+        last_net_stats, last_time = current_net, current_time
+
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*') 
+        self.end_headers()
+        self.wfile.write(json.dumps(data).encode('utf-8'))
+
+    def log_message(self, format, *args): return 
+
+if __name__ == "__main__":
+    try:
+        print(">>> DEMARRAGE DU PONT ROG EXECUTABLE...")
+        server = HTTPServer(('localhost', 9999), DashboardHandler)
+        print(">>> CONNECTE AU PORT 9999 [OK]")
+        server.serve_forever()
+    except Exception as e:
+        print(f"Erreur : {e}")
+        input()
+
+
+
+2. Créer l'exécutable (.exe)
+
+Pour faire ça, on va utiliser un outil qui "emballe" tout.
+
+    Ouvre une invite de commande (CMD) en mode Administrateur.
+
+    Place ton fichier rog_bridge.py sur ton bureau.
+
+    Dans le CMD, déplace-toi sur le bureau : cd Desktop
+
+    Lance la création de l'EXE : python -m PyInstaller --onefile --noconsole rog_bridge.py   (Note : Si tu veux voir la fenêtre noire pour débugger, enlève --noconsole).
+
+
+
+3. Résultat :
+
+Une fois terminé, tu auras un dossier nommé dist sur ton bureau. À l'intérieur se trouve rog_bridge.exe.
+
+    Tu peux supprimer tout le reste.
+
+    Garde juste ce rog_bridge.exe.
+
+    Double-clique dessus : il va lancer le serveur en arrière-plan.
+
+    Relance ta page Firefox.
+
+C'est la méthode la plus propre : l'exécutable contient son propre Python et ses propres modules, donc Windows ne pourra plus l'empêcher de fonctionner.
+
+
+
+
+4 - Où est ton fichier :
+
+    Regarde sur ton Bureau.
+
+    Tu vas voir un nouveau dossier nommé dist.
+
+    À l'intérieur, tu trouveras rog_bridge.exe.
