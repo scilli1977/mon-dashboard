@@ -4,15 +4,48 @@
     <meta charset="UTF-8">
     <title>ROG Dash - Final Station</title>
     <link rel="stylesheet" type="text/css" href="format.css">
+<!-- SUPPRESSION DU BASE TARGET BLANK GLOBAL -->
 </head>
 <body>
+    <!-- SÉLECTEUR DE THÈME - CENTRÉ EN HAUT -->
+    <div class="theme-selector">
+        <div class="theme-btn active" data-theme="dark" title="ROG Dark"></div>
+        <div class="theme-btn" data-theme="red" title="Red Gaming"></div>
+        <div class="theme-btn" data-theme="purple" title="Purple Neon"></div>
+        <div class="theme-btn" data-theme="orange" title="Amber"></div>
+        <div class="theme-btn" data-theme="ice" title="Ice Cold"></div>
+        <div class="theme-btn" data-theme="green" title="Matrix Green"></div>
+        <div class="theme-btn" data-theme="pink" title="Hot Pink"></div>
+        <div class="theme-btn" data-theme="yellow" title="Golden Sun"></div>
+        <div class="theme-btn" data-theme="lime" title="Toxic Lime"></div>
+        <div class="theme-btn" data-theme="teal" title="Deep Teal"></div>
+        <div class="theme-btn" data-theme="magenta" title="Neon Magenta"></div>
+        <div class="theme-btn" data-theme="gold" title="Royal Gold"></div>
+        <div class="theme-btn" data-theme="blood" title="Blood Red"></div>
+        <div class="theme-btn" data-theme="ocean" title="Deep Ocean"></div>
+        <div class="theme-btn" data-theme="forest" title="Forest Green"></div>
+        <div class="theme-btn" data-theme="midnight" title="Midnight Blue"></div>
+        <div class="theme-btn" data-theme="cherry" title="Cherry Blossom"></div>
+        <div class="theme-btn" data-theme="cyber" title="Cyber Purple"></div>
+        <div class="theme-btn" data-theme="matrix" title="Classic Matrix"></div>
+        <div class="theme-btn" data-theme="sunset" title="Sunset Orange"></div>
+        <div class="mode-toggle">
+            <button class="mode-toggle-btn" id="mode-toggle" title="Basculer Clair/Sombre">
+                <span id="mode-icon">🌙</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION DE THÈME (en bas à droite) -->
+    <div id="theme-notification" class="theme-notification"></div>
+
     <div class="page-wrapper">
         <div class="sidebar sidebar-left">
             <div class="widget-box">
                 <div class="widget-title">MÉTÉO RÉELLE (Charleroi)</div>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span id="real-temp" style="font-size: 30px; font-weight: bold; color: #00ffcc;">--°C</span>
-                    <span id="real-desc" style="color: #00ffcc; font-size: 10px;">SCANNING...</span>
+                    <span id="real-temp" style="font-size: 30px; font-weight: bold; color: var(--accent-primary);">--°C</span>
+                    <span id="real-desc" style="color: var(--accent-primary); font-size: 10px;">SCANNING...</span>
                 </div>
                 <div class="stat-row">RESSENTI: <span id="real-feel">--°C</span></div>
                 <div class="stat-row">HUMIDITÉ: <span id="real-hum">--%</span></div>
@@ -35,21 +68,22 @@
                 <div class="crypto-row"><span>CARDANO</span><span id="ada-price" class="price-tag">-- €</span></div>
             </div>
 
+            <!-- CENTRE MULTIMÉDIA - CORRIGÉ : SANS TARGET BLANK -->
             <div class="widget-box">
                 <div class="widget-title">CENTRE MULTIMÉDIA</div>
                 <div class="shortcut-grid">
-                    <a href="https://www.netflix.com" target="_blank" class="btn-short btn-nfx">NETFLIX</a>
-                    <a href="https://www.primevideo.com" target="_blank" class="btn-short btn-amz">PRIME VIDEO</a>
-                    <a href="https://www.disneyplus.com" target="_blank" class="btn-short btn-dis">DISNEY+</a>
-                    <a href="https://www.max.com" target="_blank" class="btn-short btn-hbo">HBO MAX</a>
-                    <a href="https://open.spotify.com" target="_blank" class="btn-short btn-spt">SPOTIFY</a>
-                    <a href="https://www.youtube.com" target="_blank" class="btn-short btn-yt">YOUTUBE</a>
-                    <a href="https://music.youtube.com/" target="_blank" class="btn-short btn-yt">YOUTUBE MUSIC</a>
-                    <a href="https://discord.com/channels/@me" target="_blank" class="btn-short btn-dis">DISCORD</a>
-                    <a href="https://www.twitch.tv" target="_blank" class="btn-short btn-twh">TWITCH</a>
-                    <a href="https://steamcommunity.com" target="_blank" class="btn-short btn-stm">STEAM</a>
-                    <a href="https://www.canva.com" target="_blank" class="btn-short btn-canva">CANVA</a>
-                    <a href="https://www.tiktok.com" target="_blank" class="btn-short btn-tk">TIKTOK</a>
+                    <a href="https://www.netflix.com" class="btn-short btn-nfx">NETFLIX</a>
+                    <a href="https://www.primevideo.com" class="btn-short btn-amz">PRIME VIDEO</a>
+                    <a href="https://www.disneyplus.com" class="btn-short btn-dis">DISNEY+</a>
+                    <a href="https://www.max.com" class="btn-short btn-hbo">HBO MAX</a>
+                    <a href="https://open.spotify.com" class="btn-short btn-spt">SPOTIFY</a>
+                    <a href="https://www.youtube.com" class="btn-short btn-yt">YOUTUBE</a>
+                    <a href="https://music.youtube.com/" class="btn-short btn-yt">YOUTUBE MUSIC</a>
+                    <a href="https://discord.com/channels/@me" class="btn-short btn-dis">DISCORD</a>
+                    <a href="https://www.twitch.tv" class="btn-short btn-twh">TWITCH</a>
+                    <a href="https://steamcommunity.com" class="btn-short btn-stm">STEAM</a>
+                    <a href="https://www.canva.com" class="btn-short btn-canva">CANVA</a>
+                    <a href="https://www.tiktok.com" class="btn-short btn-tk">TIKTOK</a>
                 </div>
             </div>
 
@@ -57,7 +91,7 @@
                 <div class="widget-title">ANALYSEUR DE FLUX RÉSEAU</div>
                 
                 <div class="stat-row" style="flex-direction: column; align-items: flex-start;">
-                    <div style="display: flex; justify-content: space-between; width: 100%; font-family: 'Courier Prime'; font-size: 10px; color: #00ffcc;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; font-family: 'Courier Prime'; font-size: 10px; color: var(--accent-primary);">
                         <span>ENTRANT:</span>
                         <span id="net-in">0.00 Mo/s</span>
                     </div>
@@ -67,7 +101,7 @@
                 </div>
 
                 <div class="stat-row" style="flex-direction: column; align-items: flex-start; margin-top: 12px;">
-                    <div style="display: flex; justify-content: space-between; width: 100%; font-family: 'Courier Prime'; font-size: 10px; color: #ffffff;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; font-family: 'Courier Prime'; font-size: 10px; color: var(--text-primary);">
                         <span>SORTANT:</span>
                         <span id="net-out">0.00 Mo/s</span>
                     </div>
@@ -75,15 +109,27 @@
                         <div id="bar-net-out" class="bar-fill-blue" style="width: 0%;"></div>
                     </div>
                 </div>
+
+                <div class="net-graph-container">
+                    <canvas id="net-graph-canvas" width="380" height="80"></canvas>
+                </div>
+
+                <div class="stat-row" style="color:var(--accent-primary); font-family:'Courier Prime', monospace; margin-top:10px; border-top: 1px solid var(--border-color); padding-top:10px; font-size: 10px; justify-content: center; gap: 15px;">
+                    <span>PING: <span id="net-ping">--</span>ms</span>
+                    <span>|</span>
+                    <span>DL: <span id="net-dl">--</span>Mb</span>
+                    <span>|</span>
+                    <span>UL: <span id="net-ul">--</span>Mb</span>
+                </div>
             </div>
 
             <div class="widget-box">
                 <div class="widget-title">SÉCURITÉ & PORTS</div>
                 <div class="console-box" id="security-status">
-                    <span style="color: #00ffcc;">> FIREWALL :</span> ACTIF<br>
-                    <span style="color: #00ffcc;">> PORTS SCAN :</span> PROTÉGÉ<br>
-                    <span style="color: #00ffcc;">> VPN :</span> DÉCONNECTÉ<br>
-                    <span style="color: #00ffcc;">> ENCRYPTION :</span> AES-256
+                    <span style="color: var(--accent-primary);">> FIREWALL :</span> ACTIF<br>
+                    <span style="color: var(--accent-primary);">> PORTS SCAN :</span> PROTÉGÉ<br>
+                    <span style="color: var(--accent-primary);">> VPN :</span> DÉCONNECTÉ<br>
+                    <span style="color: var(--accent-primary);">> ENCRYPTION :</span> AES-256
                 </div>
             </div>
 
@@ -92,7 +138,6 @@
                 <div class="news-ticker"><div id="news-stream" class="news-content">> INITIALISATION...</div></div>
             </div>
         </div>
-
 
         <div class="main-content">
             <div class="weather-header">
@@ -103,14 +148,14 @@
 
             <div id="clock-container" style="text-align:center;">
                 <div id="clock">00:00:00</div>
-                <div id="date" style="color:#777; font-size:12px; letter-spacing:2px;">STATION ONLINE</div>
+                <div id="date" style="color:var(--text-muted); font-size:12px; letter-spacing:2px;">STATION ONLINE</div>
             </div>
 
             <div class="grid-container">
                 <a class="card" href="http://www.google.be"><img src="images/google.jpg"></a>
                 <a class="card" href="https://gemini.google.com/"><img src="images/gemini.jpg"></a>
+                <a class="card" href="https://www.kimi.com/"><img src="images/kimi.jpg"></a>
                 <a class="card" href="http://www.facebook.com/"><img src="images/facebook-virus.jpg"></a>
-                <a class="card" href="http://www.youtube.com/"><img src="images/y.jpg"></a>
                 <a class="card" href="https://www.yggtorrent.org/"><img src="images/Yggtorrent.jpg"></a>
                 <a class="card" href="https://www.zone-telechargement.irish/"><img src="images/zone-telechargement.jpg"></a>
                 <a class="card" href="https://www.tirexo.fit/"><img src="images/tirevo.jpg"></a>
@@ -137,88 +182,128 @@
                 </form>
             </div>
 
-            <div class="bottom-status-bar" style="text-align:center; color:#00ffcc; font-size:10px; letter-spacing:1px;">
-                STATUT DU RÉSEAU: OPTIMAL | SÉCURITÉ: ACTIVE
+            <div class="bottom-status-bar" style="text-align:center; color:var(--accent-primary); font-size:10px; letter-spacing:1px;">
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <span id="backend-dot" class="status-dot offline"></span>
+                    STATUT DU RÉSEAU: <span id="backend-text">OFFLINE</span> | SÉCURITÉ: ACTIVE
+                </span>
             </div>
         </div>
 
-            <div class="sidebar sidebar-right">
-                <div class="widget-box">
-                    <div class="widget-title">PERFORMANCE LIVE</div>
-                    
-                    <div class="performance-item">
-                        <div class="stat-header">
-                            <span>PROCESSOR (CPU)</span>
-                            <span id="cpu-val">--%</span>
-                        </div>
-                        <div class="bar-bg">
-                            <div id="cpu-bar" class="bar-fill-blue" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="performance-item">
-                        <div class="stat-header">
-                            <span>MEMORY (RAM)</span>
-                            <span id="ram-val">--%</span>
-                        </div>
-                        <div class="bar-bg">
-                            <div id="ram-bar" class="bar-fill-blue" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="stat-row" style="color:#00ffcc; font-family:monospace; margin-top:10px; border-top: 1px solid rgba(0,255,204,0.1); padding-top:10px;">
-                        PING: <span id="net-ping">--</span>ms | DL: <span id="net-dl">--</span>Mb | UL: <span id="net-ul">--</span>Mb
-                    </div>
-                </div>   
-
+        <div class="sidebar sidebar-right">
+            <!-- ÉNERGIE & THERMIQUE - CORRIGÉ : BOUTONS SANS HREF, UNIQUEMENT ONCLICK -->
             <div class="widget-box">
                 <div class="widget-title">ÉNERGIE & THERMIQUE</div>
-                <div class="stat-row">TEMPÉRATURE CPU: <span id="cpu-temp" style="color:#00ffcc;">--°C</span></div>
-                <div class="shortcut-grid">
-                    <a href="javascript:void(0)" id="btn-turbo" class="btn-short btn-turbo-fix" onclick="setPowerMode('TURBO')">MODE TURBO</a>
-                    <a href="javascript:void(0)" id="btn-eco" class="btn-short" onclick="setPowerMode('ECO')">ÉCO MODE</a>
+                <div class="shortcut-grid" style="margin-top: 4px;">
+                    <button id="btn-turbo" class="btn-short btn-turbo-fix" onclick="setPowerMode('TURBO')">MODE TURBO</button>
+                    <button id="btn-eco" class="btn-short" onclick="setPowerMode('ECO')">ÉCO MODE</button>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">PERFORMANCE LIVE</div>
+                
+                <div class="performance-item" style="margin-bottom: 6px;">
+                    <div class="stat-header">
+                        <span>PROCESSOR (CPU)</span>
+                        <span id="cpu-val">--%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div id="cpu-bar" class="bar-fill-blue" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="performance-item" style="margin-bottom: 6px;">
+                    <div class="stat-header">
+                        <span>MEMORY (RAM)</span>
+                        <span id="ram-val">--%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div id="ram-bar" class="bar-fill-blue" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="performance-item" style="margin-bottom: 0;">
+                    <div class="stat-header">
+                        <span>TEMPÉRATURE CPU</span>
+                        <span id="cpu-temp" style="color:var(--accent-primary);">--°C</span>
+                    </div>
+                </div>
+            </div>   
+
+            <!-- WIDGET GPU NVIDIA -->
+            <div class="widget-box" id="gpu-widget" style="display: none;">
+                <div class="widget-title">GPU NVIDIA</div>
+                <div class="gpu-name" id="gpu-name">DÉTECTION...</div>
+                
+                <div class="performance-item" style="margin-bottom: 6px;">
+                    <div class="stat-header">
+                        <span>UTILISATION GPU</span>
+                        <span id="gpu-load">--%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div id="gpu-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="performance-item" style="margin-bottom: 6px;">
+                    <div class="stat-header">
+                        <span>MÉMOIRE VRAM</span>
+                        <span id="gpu-vram">-- / -- Go</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div id="gpu-vram-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="performance-item" style="margin-bottom: 0;">
+                    <div class="stat-header">
+                        <span>TEMPÉRATURE GPU</span>
+                        <span id="gpu-temp">--°C</span>
+                    </div>
                 </div>
             </div>
 
             <div class="widget-box">
                 <div class="widget-title">Statut Stockage</div>
                 
-                <div class="stat-row">
+                <div class="stat-row" style="margin-bottom: 2px;">
                     <span>DISQUE (C:):</span>
                     <span id="val-disk-c">-- / -- Go</span>
                 </div>
-                <div class="bar-bg"><div id="bar-disk-c" class="bar-fill" style="width: 0%;"></div></div>
+                <div class="bar-bg" style="margin-bottom: 6px;"><div id="bar-disk-c" class="bar-fill" style="width: 0%;"></div></div>
 
-                <div class="stat-row">
+                <div class="stat-row" style="margin-bottom: 2px;">
                     <span>DONNÉES (E:):</span>
                     <span id="val-disk-e">-- / -- Go</span>
                 </div>
-                <div class="bar-bg"><div id="bar-disk-e" class="bar-fill" style="width: 0%;"></div></div>
+                <div class="bar-bg" style="margin-bottom: 6px;"><div id="bar-disk-e" class="bar-fill" style="width: 0%;"></div></div>
 
-                <div class="stat-row">
+                <div class="stat-row" style="margin-bottom: 2px;">
                     <span>DONNÉES (F:):</span>
                     <span id="val-disk-f">-- / -- Go</span>
                 </div>
                 <div class="bar-bg"><div id="bar-disk-f" class="bar-fill" style="width: 0%;"></div></div>
             </div>
 
+            <!-- EXPLORATEUR - CORRIGÉ : CHEMINS AVEC FORWARD SLASHS -->
             <div class="widget-box">
                 <div class="widget-title">Explorateur</div>
-                <div class="shortcut-grid">
-                    <a href="C:\Users\Vassili Flerianos\Documents" class="btn-short btn-doc">Documents</a>
-                    <a href="C:\Users\Vassili Flerianos\Downloads" class="btn-short btn-dl">Téléchargement</a>
-                    <a href="C:\Users\Vassili Flerianos\Pictures" class="btn-short btn-img">Images</a>
-                    <a href="C:\Users\Vassili Flerianos\Videos" class="btn-short btn-vid">Vidéos</a>
-                    <a href="C:\Users\Vassili Flerianos\Music" class="btn-short btn-mus">Musique</a>
-                    <a href="E:\Vuze Downloads" class="btn-short btn-vuze">Vuze Download</a>
-                    <a href="C:\Program Files" class="btn-short btn-prog">Programmes</a>
-                    <a href="C:\" class="btn-short btn-disk">Disque C:</a>
+                <div class="shortcut-grid" style="margin-top: 4px;">
+                    <a href="C:/Users/Vassili Flerianos/Documents" class="btn-short btn-doc">Documents</a>
+                    <a href="C:/Users/Vassili Flerianos/Downloads" class="btn-short btn-dl">Téléchargement</a>
+                    <a href="C:/Users/Vassili Flerianos/Pictures" class="btn-short btn-img">Images</a>
+                    <a href="C:/Users/Vassili Flerianos/Videos" class="btn-short btn-vid">Vidéos</a>
+                    <a href="C:/Users/Vassili Flerianos/Music" class="btn-short btn-mus">Musique</a>
+                    <a href="E:/Vuze Downloads" class="btn-short btn-vuze">Vuze Download</a>
+                    <a href="C:/Program Files" class="btn-short btn-prog">Programmes</a>
+                    <a href="C:/" class="btn-short btn-disk">Disque C:</a>
                 </div>
             </div>   
 
             <div class="widget-box">
                 <div class="widget-title">Gestion Système</div>
-                <div class="shortcut-grid">
+                <div class="shortcut-grid" style="margin-top: 4px;">
                     <a href="ms-settings:" class="btn-short btn-settings">Paramètres</a>
                     <a href="ms-settings:display" class="btn-short btn-display">Écran</a>
                     <a href="ms-settings:display-advancedgraphics" class="btn-short btn-gpu">Graphiques</a>
@@ -238,7 +323,7 @@
 
             <div class="widget-box">
                 <div class="widget-title">Maintenance</div>
-                <div class="shortcut-grid">
+                <div class="shortcut-grid" style="margin-top: 4px;">
                     <a href="ms-settings:troubleshoot" class="btn-short btn-fix">Dépannage</a>
                     <a href="ms-settings:recovery" class="btn-short btn-recov">Récupérer</a>
                     <a href="ms-settings:storagesense" class="btn-short btn-opti">Optimiser</a>
