@@ -1,0 +1,245 @@
+/!\ UTILISER PYTHON 3.12 COMPATIBLE  AVEC DONNEES DASHBORD (Installé le sur le pc)
+-----------------------------------------------------------
+cmd : where python3.12   (pour savoir dans quel dossier il est PYTHON)
+
+Pour commencé donné le chemin de python dans le rog_bridge.py première ligne changé avec le chemin:   #!C:\Users\Vassili Flerianos\AppData\Local\Python\bin\python3.12.exe
+
+
+--------------------------------------------------------
+A - Extraire le fichier Mozilla Firefox page accueil.rar
+--------------------------------------------------------
+--------------------------------------------------------
+
+-------------------------------------------
+B - Placer le dossier dans C:\Program Files
+-------------------------------------------
+-------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------
+C - Voici le code pour exécuté l'ANALYSEUR DE FLUX RÉSEAU, DISQUE , CPU , RAM EN TEMPS REEL (NETWORK_BRIDGE.PYW):
+-----------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
+
+1. Prendre le fichier 
+---------------------
+Allez dans votre dossier où se trouve rog_bridge.exe
+
+    C:\Program Files\Mozilla Firefox page accueil\
+
+2. Créer le lancement automatique
+----------------------------------
+Pour que Windows le lance tout seul à chaque allumage :
+
+    Faites un clic droit sur votre fichier rog_bridge.exe et choisissez Créer un raccourci.
+
+    Appuyez sur les touches Windows + R de votre clavier.
+
+    Dans la petite fenêtre qui s'ouvre, tapez exactement : shell:startup et faites Entrée.
+
+    Un dossier s'ouvre (c'est le dossier de démarrage de Windows). Coupez/Collez le raccourci que vous venez de créer à l'intérieur de ce dossier.
+
+3. Comment l'arrêter si besoin ?
+--------------------------------
+Comme la fenêtre est cachée, si vous voulez arrêter le script un jour :
+
+    Appuyez sur CTRL + SHIFT + ESC pour ouvrir le Gestionnaire des tâches.
+
+    Cherchez "pythonw.exe" dans l'onglet "Détails" ou "Processus".
+
+    Faites un clic droit et Fin de tâche.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------     
+D - Pour changé les valeurs en cas d'augmentation de la connexion si déménagement START.HTML parti javascript en bas de page (La connexion est réglé a 500 Mo/s):
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Petite astuce pour le futur :
+
+Actuellement, le code multiplie la valeur par 10 (downloadMo * 10), ce qui signifie qu'à 10 Mo/s la barre est à 100%. Pour que le 100% corresponde à 1000 Mo/s, il faut multiplier par 0.1 (ou diviser par 10).
+
+
+            // --- RÉSEAU ---
+            const downloadMo = (data.net.in / 1024).toFixed(2); 
+            const uploadMo = (data.net.out / 1024).toFixed(2);
+            
+            if(document.getElementById('net-in')) document.getElementById('net-in').innerText = downloadMo + " Mo/s";
+            if(document.getElementById('net-out')) document.getElementById('net-out').innerText = uploadMo + " Mo/s";
+            
+            // Stats réseau Sidebar droite
+            if(document.getElementById('net-dl')) document.getElementById('net-dl').innerText = (data.net.in / 1024).toFixed(1);
+            if(document.getElementById('net-ul')) document.getElementById('net-ul').innerText = (data.net.out / 1024).toFixed(1);
+
+            if(document.getElementById('bar-net-in')) document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 10), 100) + "%";
+            if(document.getElementById('bar-net-out')) document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 10), 100) + "%";
+
+Modification a apporté :
+
+
+// Remplacer le multiplicateur 10 par 0.1 pour une échelle sur 1000 Mo/s
+
+             if(document.getElementById('bar-net-in')) document.getElementById('bar-net-in').style.width = Math.min((downloadMo * 0.1), 100) + "%";
+             if(document.getElementById('bar-net-out')) document.getElementById('bar-net-out').style.width = Math.min((uploadMo * 0.1), 100) + "%";
+
+
+----------------------------------------------
+E - Pour la gestion des disque dur a affiché :
+-----------------------------------------------
+------------------------------------------------
+
+Moi j'ai trois disque dur C , E , F qui sont repris dans ses lignes de codes javascript
+
+
+            // --- DISQUES (Mise à jour avec % affiché) ---
+            const disks = [
+                { id: 'c', info: data.disks.c },
+                { id: 'e', info: data.disks.e },
+                { id: 'f', info: data.disks.f }
+            ];
+
+            disks.forEach(disk => {
+                const valEl = document.getElementById('val-disk-' + disk.id);
+                const barEl = document.getElementById('bar-disk-' + disk.id);
+                
+                if (valEl && barEl && disk.info) {
+                    // Modification ici : Ajout du pourcentage entre parenthèses
+                    valEl.innerText = disk.info.used.toFixed(1) + " / " + Math.round(disk.info.total) + " Go (" + disk.info.percent + "%)";
+                    barEl.style.width = disk.info.percent + "%";
+                    
+                    // Alerte visuelle stockage plein
+                    if (disk.info.percent >= 90) {
+                        barEl.classList.add('bar-fill-red');
+                        valEl.classList.add('text-red');
+                    } else {
+                        barEl.classList.remove('bar-fill-red');
+                        valEl.classList.remove('text-red');
+                    }
+                }
+            });
+
+1 - modifié les lettres de vos disque dur pour que sa correspond 
+----------------------------------------------------------------
+
+exemple si j'ai un disque G changé la valeur :   { id: 'g', info: data.disks.g }   
+
+2 - Enlevé une parti du code si vous avez que deux disque dur 
+-------------------------------------------------------------
+
+exemple enlevé une ligne de code :       { id: 'c', info: data.disks.c },
+
+                                         { id: 'g', info: data.disks.g },
+
+3 - changé les lignes de codes pour cette parti :
+-------------------------------------------------
+
+Meme etapes qu'au dessus si un disque enlevé les autre et renomer en fonction des lettres de vos disque dur.
+
+            <div class="widget-box">
+                <div class="widget-title">Statut Stockage</div>
+                
+                <div class="stat-row">
+                    <span>DISQUE (C:):</span>
+                    <span id="val-disk-c">-- / -- Go</span>
+                </div>
+                <div class="bar-bg"><div id="bar-disk-c" class="bar-fill" style="width: 0%;"></div></div>
+
+                <div class="stat-row">
+                    <span>DONNÉES (E:):</span>
+                    <span id="val-disk-e">-- / -- Go</span>
+                </div>
+                <div class="bar-bg"><div id="bar-disk-e" class="bar-fill" style="width: 0%;"></div></div>
+
+                <div class="stat-row">
+                    <span>DONNÉES (F:):</span>
+                    <span id="val-disk-f">-- / -- Go</span>
+                </div>
+                <div class="bar-bg"><div id="bar-disk-f" class="bar-fill" style="width: 0%;"></div></div>
+            </div>
+
+-------------------------------------------------------------------------                
+F- installé les pythons de fonctionnement pour les données en temps réel:
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+lancé cmd en adrministrateur(donner le repertoir ou se trouve python ici dessous c'est le mien):
+
+1- executé la commande pour Nvidia(Données GPU)ATTENTION SI AUTRE MARQUE DE GPU AUTRE INSTALLATEUR VOIR AVEC UNE AI: 
+--------------------------------------------------------------------------------------------------------------------
+
+"C:\Users\Vassili Flerianos\AppData\Local\Python\bin\python.exe" -m pip install nvidia-ml-py
+
+
+2- executé la commande pour CPU , DISQUE DUR , RESEAU , BIBLIOTHEQUE et RAM(Données CPU et RAM):  
+-----------------------------------------------------------------------------------------------
+
+"C:\Users\Vassili Flerianos\AppData\Local\Python\bin\python.exe" -m pip install psutil
+
+3-Température CPU et GPU
+-------------------------
+a-lancé cmd en adrministrateur
+b- installé avec la commande     python -m pip install pythonnet --pre
+c- installé avec la commande     python -m pip install WinTmp
+
+
+------------------------------------------------------------------------------------------------------------
+G-Création d'un mot de passe au premier démarage du serveur rog_bridge.py (Mot de passe actuel : Naxos1946.)
+-------------------------------------------------------------------------------------------------------------
+
+Marche à suivre pour changer le mot de passe :
+
+    Ouvre le fichier rog_password.txt (dans le même dossier que rog_bridge.py)
+
+    Remplace le mot de passe actuel (Naxos1946.) par ton nouveau mot de passe
+
+    Sauvegarde le fichier
+
+-------------------------------------------------------
+H- Restauration du fichier BACKUP backup_rog_bridge.py (génère un dossier backup dans l'ordinateur )
+-------------------------------------------------------
+📋 Marche à suivre pour CMD (Windows)
+--------------------------------------
+Étape 1 : Ouvrir CMD au bon endroit
+
+Depuis l'explorateur (plus simple) :
+
+    Va dans ton dossier Windows ou se trouve la dashboard
+    Clique dans la barre d'adresse en haut sur la page du dossier ou se trouve la dashboard
+    Tape cmd et appuie sur Entrée
+    CMD s'ouvre directement dans ce dossier
+
+
+Étape 2 : Vérifier que tu es au bon endroit
+Tape : dir
+
+Tu dois voir :
+
+rog_bridge.py
+dashboard.js
+format.css
+start.html
+rog_password.txt
+backup_rog_bridge.py   ← Le script de sauvegarde
+
+Étape 3 : Lancer le script
+
+python backup_rog_bridge.py
+
+📁 Ce que fait le script de sauvegarde
+---------------------------------------
+📁 Mozilla Firefox page accueil-Futuriste/
+   ├── rog_bridge.py          ← [LECTURE SEULE] Copié vers backup
+   ├── dashboard.js           ← [LECTURE SEULE] Copié vers backup  
+   ├── format.css             ← [LECTURE SEULE] Copié vers backup
+   ├── start.html             ← [LECTURE SEULE] Copié vers backup
+   ├── rog_password.txt       ← [LECTURE SEULE] Copié vers backup
+   └── backup_rog_bridge.py   ← Le script (il lit tes fichiers, ne les modifie pas)
+           ↓
+           ↓ Crée ce dossier :
+           ↓
+       📁 ROG_Backup/         ← [NOUVEAU DOSSIER]
+           ├── rog_bridge.py  ← Copie du fichier original
+           ├── dashboard.js   ← Copie du fichier original
+           ├── format.css     ← Copie du fichier original
+           ├── start.html     ← Copie du fichier original
+           ├── rog_password.txt ← Copie du fichier original
+           └── _backup_info.json ← Fichier d'infos (date, etc.)

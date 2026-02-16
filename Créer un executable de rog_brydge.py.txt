@@ -1,0 +1,7 @@
+Mettre rog_bridge.py sur le bureau
+
+# 1. Installer PyInstaller
+python -m pip install pyinstaller
+
+# 2. Créer l'exécutable ROG_Bridge.exe sur le Bureau
+python -m PyInstaller --onefile --name "ROG_Bridge" --clean --noconfirm --distpath "." rog_bridge.py
