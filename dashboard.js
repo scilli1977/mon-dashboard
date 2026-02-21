@@ -434,7 +434,7 @@ function updateProcessList(processes) {
     processEl.innerHTML = processes.map(proc => {
         const name = proc.name.length > 25 ? proc.name.substring(0, 25) + '...' : proc.name; // Augmenté à 25
         const colorClass = proc.cpu > 50 ? 'text-red' : (proc.cpu > 20 ? 'status-warning' : 'status-ok');
-        return `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; font-family: 'Courier Prime', monospace; font-size: 8px;">
+        return `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; font-family: 'Courier Prime', monospace; font-size: 9px;">
             <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${proc.name}">${name}</span>
             <span class="${colorClass}" style="margin-left: 10px; font-weight: bold;">${proc.cpu.toFixed(1)}%</span>
         </div>`;
