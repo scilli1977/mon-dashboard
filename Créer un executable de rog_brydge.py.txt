@@ -1,7 +1,7 @@
-Mettre rog_bridge.py sur le bureau
+Lancer cmd sur la page ou se trouve rog_bridge.py et logo.ico avec la commande :
 
-# 1. Installer PyInstaller
-python -m pip install pyinstaller
 
-# 2. Créer l'exécutable ROG_Bridge.exe sur le Bureau
-python -m PyInstaller --onefile --name "ROG_Bridge" --clean --noconfirm --distpath "." rog_bridge.py
+python -m PyInstaller --noconsole --onefile --icon="logo.ico" --add-data "logo.ico;." --collect-all pystray --collect-all pyperclip --name "ROG_Dashboard" rog_bridge.py
+
+
+un dossier build et dist sont créer récuperer l'executable dans le dossier dist et apres vous pouvez supprimer les dossiers.

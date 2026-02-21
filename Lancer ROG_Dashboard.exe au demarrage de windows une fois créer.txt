@@ -1,0 +1,8 @@
+Win + R   la commande executer se lance taper la commande   shell:startup
+
+
+Clic-droit sur l'EXECUTABLE dans le dossier ou il restera > Créer un raccourci.
+
+
+
+Mettre le raccourci dans C:\Users\Vassili Flerianos\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
