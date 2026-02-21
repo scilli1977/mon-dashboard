@@ -432,10 +432,13 @@ function updateProcessList(processes) {
     }
 
     processEl.innerHTML = processes.map(proc => {
-        const name = proc.name.length > 15 ? proc.name.substring(0, 15) + '...' : proc.name;
+        const name = proc.name.length > 25 ? proc.name.substring(0, 25) + '...' : proc.name; // Augmenté à 25
         const colorClass = proc.cpu > 50 ? 'text-red' : (proc.cpu > 20 ? 'status-warning' : 'status-ok');
-        return `${name} <span class="${colorClass}" style="float:right;">${proc.cpu.toFixed(1)}%</span>`;
-    }).join('<br>');
+        return `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; font-family: 'Courier Prime', monospace; font-size: 8px;">
+            <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${proc.name}">${name}</span>
+            <span class="${colorClass}" style="margin-left: 10px; font-weight: bold;">${proc.cpu.toFixed(1)}%</span>
+        </div>`;
+    }).join('');
 }
 
 function updateSecurityStatus(security) {

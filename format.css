@@ -866,17 +866,19 @@ body {
 }
 
 #gpu-vram-bar {
-  background: var(--bar-fill-upload) !important;
+  background: var(--bar-fill) !important;
   box-shadow: 0 0 8px var(--shadow-glow);
 }
 
 .gpu-name {
   font-size: 9px;
-  color: var(--text-muted);
+  color: var(--accent-primary) !important;
   margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 0 5px var(--shadow-glow);
+  font-weight: bold;
 }
 
 /* FIX: Conteneur du graphique réseau corrigé */
@@ -1318,37 +1320,21 @@ body {
     border-radius: 50%;
     animation: pulse-dot 2s infinite;
 }
-/* Labels des disques en couleur secondaire - spécifique à Statut Stockage */
-/* Règle générale pour tous les stat-rows */
-.stat-row > span:first-child {
-  color: var(--text-secondary);
+
+/* CORRECTION: Labels des disques uniquement - harmonisés avec le thème */
+/* Cible spécifique: les labels DISQUE C:, DONNÉES E:, DONNÉES F: */
+.stat-row:has(span[id^="val-disk-"]) span:first-child {
+  color: var(--accent-primary) !important;
   font-size: 10px;
+  text-shadow: 0 0 3px var(--shadow-glow);
 }
 
-/* Exceptions: Météo (conserver la couleur existante) */
-#real-feel,
-#real-hum,
-#center-details,
-#center-weather {
-  color: var(--accent-primary) !important;
-}
-
-/* Exceptions: Réseau (conserver les couleurs existantes) */
-#net-in,
-#net-out,
-#net-ping,
-#net-dl,
-#net-ul {
-  color: var(--accent-primary) !important;
-}
-
-/* S'assurer que les valeurs des disques restent en accent-primary */
+/* Les valeurs des disques restent en couleur primaire */
 #val-disk-c,
 #val-disk-e,
 #val-disk-f {
   color: var(--accent-primary) !important;
-  font-family: 'Courier Prime', monospace;
-  font-weight: bold;
-  font-size: 9px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
 }
-

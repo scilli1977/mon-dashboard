@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ROG Dashboard v6.0 - Système complet en un seul fichier
-Architecture modulaire fusionnée pour exécution autonome
-CORRECTION: Gestion améliorée des chemins Windows pour l'Explorateur
+ROG Dashboard v7.0 - Système avec Systray et Mode Portable
+Architecture complète : Dashboard + Icône barre des tâches
 """
 
 import os
@@ -15,31 +14,87 @@ import traceback
 import subprocess
 import time
 import random
+import webbrowser
+import socket
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs, unquote
 from socketserver import ThreadingMixIn
 
 # =============================================================================
-# VARIABLES GLOBALES - RATE LIMITING
+# INSTALLATION AUTO DES DÉPENDANCES
+# =============================================================================
+
+REQUIRED_PACKAGES = ['psutil', 'pystray', 'Pillow', 'pyperclip']
+
+def install_packages():
+    """Installe automatiquement les packages manquants"""
+    for package in REQUIRED_PACKAGES:
+        try:
+            __import__(package.lower() if package != 'Pillow' else 'PIL')
+        except ImportError:
+            print(f"[INFO] Installation de {package}...")
+            os.system(f'{sys.executable} -m pip install {package}')
+
+install_packages()
+
+# Import après installation
+import psutil
+from pystray import Icon, Menu, MenuItem
+from PIL import Image
+import pyperclip
+
+# =============================================================================
+# CONFIGURATION DES CHEMINS (VERSION PORTABLE & EXE)
+# =============================================================================
+
+PORT = 9999
+
+if getattr(sys, 'frozen', False):
+    # Mode EXE : Dossier où se trouve le .exe (Portable)
+    SCRIPT_DIR = os.path.dirname(sys.executable)
+    # Mode EXE : Dossier temporaire interne PyInstaller (pour les ressources)
+    BUNDLE_DIR = getattr(sys, '_MEIPASS', SCRIPT_DIR)
+else:
+    # Mode Script Classique
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    BUNDLE_DIR = SCRIPT_DIR
+
+PASSWORD_FILE = os.path.join(SCRIPT_DIR, "rog_password.txt")
+LOGO_PATH = os.path.join(BUNDLE_DIR, "logo.ico")
+CRASH_LOG = os.path.join(SCRIPT_DIR, "crash_log.txt")
+
+STATIC_DIR = SCRIPT_DIR
+
+# =============================================================================
+# VARIABLES GLOBALES
 # =============================================================================
 
 request_counts = {}
 REQUEST_LIMIT = 5  # max 5 requêtes par seconde par IP
+authenticated_ips = set()
+authenticated_ips_lock = threading.Lock()
+
+# État GPU
+try:
+    import pynvml
+    pynvml.nvmlInit()
+    GPU_AVAILABLE = True
+    gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0) if pynvml.nvmlDeviceGetCount() > 0 else None
+    if not gpu_handle:
+        GPU_AVAILABLE = False
+except ImportError:
+    GPU_AVAILABLE = False
+    gpu_handle = None
+
+# Stats réseau
+last_net_stats = None
+last_time = time.time()
+net_history = {'in': [0]*60, 'out': [0]*60}
 
 # =============================================================================
-# PARTIE 1: CONFIGURATION ET THÈMES
+# THÈMES ET CONFIGURATION UI
 # =============================================================================
-
-import os
-
-PORT = 9999
-
-# LIGNE 35 - CHEMIN ABSOLU DU FICHIER PASSWORD
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PASSWORD_FILE = os.path.join(SCRIPT_DIR, "rog_password.txt")
-
-STATIC_DIR = "."
 
 THEMES_LIST = [
     "dark", "light", "red", "purple", "orange", "ice", "green", "pink",
@@ -334,79 +389,60 @@ THEMES_CSS = """
     --bar-fill-upload: #ff7777;
 }
 """
-
 # =============================================================================
-# PARTIE 2: MONITEUR SYSTÈME
+# FONCTIONS SYSTÈME ET MONITORING
 # =============================================================================
-
-last_net_stats = None
-last_time = time.time()
-net_history = {'in': [0]*60, 'out': [0]*60}
-
-try:
-    import psutil
-    PSUTIL_AVAILABLE = True
-except ImportError:
-    PSUTIL_AVAILABLE = False
-    print("[WARN] psutil non installé - Mode simulation activé")
-
-try:
-    import pynvml
-    pynvml.nvmlInit()
-    GPU_AVAILABLE = True
-    gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0) if pynvml.nvmlDeviceGetCount() > 0 else None
-    if not gpu_handle:
-        GPU_AVAILABLE = False
-except ImportError:
-    GPU_AVAILABLE = False
-    gpu_handle = None
 
 def get_cpu_temp():
+    """Récupère la température CPU"""
     try:
-        if PSUTIL_AVAILABLE:
-            load = psutil.cpu_percent(interval=0.1)
-            variation = random.uniform(-3, 3)
-            return round(48 + (load / 100) * 35 + variation, 1)
+        temps = psutil.sensors_temperatures()
+        if temps:
+            for name, entries in temps.items():
+                for entry in entries:
+                    if entry.current:
+                        return round(entry.current, 1)
+        # Fallback basé sur la charge
+        load = psutil.cpu_percent(interval=0.1)
+        return round(40 + (load / 100) * 40 + random.uniform(-3, 3), 1)
     except:
-        pass
-    return round(50 + random.uniform(-5, 8), 1)
+        return round(45 + random.uniform(-5, 5), 1)
 
 def get_performance_data():
-    if PSUTIL_AVAILABLE:
-        try:
-            return {
-                "cpu": psutil.cpu_percent(interval=0.1),
-                "ram": psutil.virtual_memory().percent,
-                "cpu_temp": get_cpu_temp()
-            }
-        except Exception as e:
-            print(f"[WARN] Erreur performance: {e}")
-    
-    return {
-        "cpu": random.uniform(10, 45),
-        "ram": random.uniform(30, 70),
-        "cpu_temp": get_cpu_temp()
-    }
+    """Récupère les données CPU/RAM"""
+    try:
+        return {
+            "cpu": psutil.cpu_percent(interval=0.1),
+            "ram": psutil.virtual_memory().percent,
+            "cpu_temp": get_cpu_temp()
+        }
+    except Exception as e:
+        print(f"[WARN] Erreur performance: {e}")
+        return {
+            "cpu": random.uniform(10, 45),
+            "ram": random.uniform(30, 70),
+            "cpu_temp": get_cpu_temp()
+        }
 
 def get_disk_data():
+    """Récupère les données des disques"""
     disks = {}
-    if PSUTIL_AVAILABLE:
-        try:
-            for partition in psutil.disk_partitions():
-                try:
-                    if partition.device and ':' in partition.device:
-                        letter = partition.device[0].lower()
-                        usage = psutil.disk_usage(partition.mountpoint)
-                        disks[letter] = {
-                            "total": round(usage.total / (1024**3), 1),
-                            "used": round(usage.used / (1024**3), 1),
-                            "free": round(usage.free / (1024**3), 1),
-                            "percent": usage.percent
-                        }
-                except:
-                    pass
-        except Exception as e:
-            print(f"[WARN] Erreur disques: {e}")
+    try:
+        for partition in psutil.disk_partitions():
+            try:
+                if partition.device and ':' in partition.device:
+                    letter = partition.device[0].lower()
+                    usage = psutil.disk_usage(partition.mountpoint)
+                    disks[letter] = {
+                        "total": round(usage.total / (1024**3), 1),
+                        "used": round(usage.used / (1024**3), 1),
+                        "free": round(usage.free / (1024**3), 1),
+                        "percent": usage.percent
+                    }
+            except:
+                pass
+    except Exception as e:
+        print(f"[WARN] Erreur disques: {e}")
     
     if not disks:
         disks = {
@@ -418,14 +454,15 @@ def get_disk_data():
     return disks
 
 def get_network_data():
+    """Récupère les données réseau"""
     global last_net_stats, last_time, net_history
     
-    if PSUTIL_AVAILABLE and last_net_stats is not None:
-        try:
-            current_time = time.time()
-            interval = max(0.1, current_time - last_time)
-            net_io = psutil.net_io_counters()
-            
+    try:
+        current_time = time.time()
+        interval = max(0.1, current_time - last_time)
+        net_io = psutil.net_io_counters()
+        
+        if last_net_stats is not None:
             bi = (net_io.bytes_recv - last_net_stats.bytes_recv) / interval / 1024
             bo = (net_io.bytes_sent - last_net_stats.bytes_sent) / interval / 1024
             
@@ -443,30 +480,27 @@ def get_network_data():
                 "out": round(bo, 2),
                 "history": net_history
             }
-        except Exception as e:
-            print(f"[WARN] Erreur réseau: {e}")
-    
-    if PSUTIL_AVAILABLE and last_net_stats is None:
-        try:
-            last_net_stats = psutil.net_io_counters()
-        except:
-            pass
-    
-    if not PSUTIL_AVAILABLE or last_net_stats is None:
-        bi = random.uniform(0.1, 5.0)
-        bo = random.uniform(0.05, 2.0)
-        net_history['in'] = net_history['in'][1:] + [round(bi, 2)]
-        net_history['out'] = net_history['out'][1:] + [round(bo, 2)]
         
-        return {
-            "in": round(bi, 2),
-            "out": round(bo, 2),
-            "history": net_history
-        }
+        last_net_stats = net_io
+        last_time = current_time
+        
+    except Exception as e:
+        print(f"[WARN] Erreur réseau: {e}")
     
-    return {"in": 0, "out": 0, "history": net_history}
+    # Simulation si erreur
+    bi = random.uniform(0.1, 5.0)
+    bo = random.uniform(0.05, 2.0)
+    net_history['in'] = net_history['in'][1:] + [round(bi, 2)]
+    net_history['out'] = net_history['out'][1:] + [round(bo, 2)]
+    
+    return {
+        "in": round(bi, 2),
+        "out": round(bo, 2),
+        "history": net_history
+    }
 
 def get_gpu_data():
+    """Récupère les données GPU NVIDIA"""
     if GPU_AVAILABLE and gpu_handle:
         try:
             util = pynvml.nvmlDeviceGetUtilizationRates(gpu_handle)
@@ -498,34 +532,34 @@ def get_gpu_data():
     return None
 
 def get_processes():
+    """Récupère les processus actifs"""
     processes = []
-    if PSUTIL_AVAILABLE:
-        try:
-            for proc in psutil.process_iter(['pid', 'name', 'cpu_percent']):
-                try:
-                    cpu = proc.info['cpu_percent']
-                    if cpu and cpu > 1.0:
-                        processes.append({
-                            "name": str(proc.info['name'] or "Unknown"),
-                            "cpu": float(cpu),
-                            "pid": int(proc.info['pid'] or 0)
-                        })
-                except (psutil.NoSuchProcess, psutil.AccessDenied):
-                    pass
-            processes.sort(key=lambda x: x['cpu'], reverse=True)
-            return processes[:5]
-        except Exception as e:
-            print(f"[WARN] Erreur processus: {e}")
-    
-    return [
-        {"name": "System Idle", "cpu": 94.0, "pid": 0},
-        {"name": "firefox.exe", "cpu": 2.4, "pid": 1234},
-        {"name": "explorer.exe", "cpu": 0.8, "pid": 5678},
-        {"name": "python.exe", "cpu": 0.5, "pid": 9999},
-        {"name": "discord.exe", "cpu": 0.3, "pid": 1111}
-    ]
+    try:
+        for proc in psutil.process_iter(['pid', 'name', 'cpu_percent']):
+            try:
+                cpu = proc.info['cpu_percent']
+                if cpu and cpu > 1.0:
+                    processes.append({
+                        "name": str(proc.info['name'] or "Unknown"),
+                        "cpu": float(cpu),
+                        "pid": int(proc.info['pid'] or 0)
+                    })
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+        processes.sort(key=lambda x: x['cpu'], reverse=True)
+        return processes[:5]
+    except Exception as e:
+        print(f"[WARN] Erreur processus: {e}")
+        return [
+            {"name": "System Idle", "cpu": 94.0, "pid": 0},
+            {"name": "firefox.exe", "cpu": 2.4, "pid": 1234},
+            {"name": "explorer.exe", "cpu": 0.8, "pid": 5678},
+            {"name": "python.exe", "cpu": 0.5, "pid": 9999},
+            {"name": "discord.exe", "cpu": 0.3, "pid": 1111}
+        ]
 
 def get_security_status():
+    """Récupère le statut de sécurité"""
     return {
         "firewall": "ACTIF - Windows Defender",
         "ports": "SCAN: AUCUNE MENACE",
@@ -534,6 +568,7 @@ def get_security_status():
     }
 
 def get_system_news():
+    """Récupère les news système"""
     gpu_status = "[GPU] Carte graphique NVIDIA détectée" if GPU_AVAILABLE else "[GPU] Mode simulation activé"
     return [
         "[SYS] Système démarré avec succès",
@@ -545,6 +580,7 @@ def get_system_news():
     ]
 
 def get_all_system_data():
+    """Récupère toutes les données système"""
     return {
         "status": "online",
         "timestamp": time.time(),
@@ -558,7 +594,7 @@ def get_all_system_data():
     }
 
 # =============================================================================
-# PARTIE 3: TEMPLATES HTML
+# TEMPLATES HTML
 # =============================================================================
 
 LOGIN_HTML = """<!DOCTYPE html>
@@ -675,7 +711,7 @@ LOGIN_HTML = """<!DOCTYPE html>
         </form>
         <div class="info">
             Accès local (127.0.0.1) = Pas de mot de passe requis<br>
-            ROG Bridge v6.0 - MODULAIRE
+            ROG Bridge v7.0 - SYSTRAY EDITION
         </div>
     </div>
     <script>
@@ -704,6 +740,7 @@ LOGIN_HTML = """<!DOCTYPE html>
 </html>"""
 
 def generate_theme_button_styles():
+    """Génère les styles CSS des boutons de thème"""
     styles = {
         'dark': '#00ffcc, #008866',
         'light': '#f5f5f0, #e0d5c5',
@@ -735,6 +772,7 @@ def generate_theme_button_styles():
     return '\n        '.join(css)
 
 def generate_dashboard_html():
+    """Génère le HTML du dashboard"""
     theme_buttons = ''.join([f'<div class="theme-btn" data-theme="{t}"></div>' for t in THEMES_LIST])
     
     return f"""<!DOCTYPE html>
@@ -1152,7 +1190,7 @@ def generate_dashboard_html():
     </div>
 
     <div class="footer">
-        ROG Dashboard v6.0 | Serveur Local: http://localhost:{PORT} | Développé pour ROG Systems
+        ROG Dashboard v7.0 | Serveur Local: http://localhost:{PORT} | Systray Edition
     </div>
 
     <script>
@@ -1391,58 +1429,44 @@ def generate_dashboard_html():
 </html>"""
 
 # =============================================================================
-# PARTIE 4: MOT DE PASSE SERVEUR ET AUTHENTIFICATION
+# FONCTIONS D'AUTHENTIFICATION
 # =============================================================================
 
 def load_password():
-    """
-    Charge le mot de passe depuis rog_password.txt (chemin absolu)
-    """
+    """Charge ou crée le mot de passe"""
     try:
-        print(f"[DEBUG] Recherche fichier: {PASSWORD_FILE}")
+        if not os.path.exists(PASSWORD_FILE):
+            with open(PASSWORD_FILE, 'w', encoding='utf-8') as f:
+                f.write("admin123")
+            print(f"[INFO] Fichier mot de passe créé: {PASSWORD_FILE}")
+            return "admin123"
         
-        if os.path.exists(PASSWORD_FILE):
-            with open(PASSWORD_FILE, 'r', encoding='utf-8') as f:
-                pwd = f.read().strip()
-                if pwd:
-                    print(f"[OK] Mot de passe chargé: {pwd}")
-                    return pwd
-            print("[WARN] Fichier vide")
-        else:
-            print(f"[WARN] Fichier introuvable: {PASSWORD_FILE}")
-            
-        # Fallback si problème
-        return "Naxos1946."
-        
+        with open(PASSWORD_FILE, 'r', encoding='utf-8') as f:
+            pwd = f.read().strip()
+            if pwd:
+                return pwd
+            else:
+                # Si vide, réinitialiser
+                with open(PASSWORD_FILE, 'w', encoding='utf-8') as f:
+                    f.write("admin123")
+                return "admin123"
     except Exception as e:
-        print(f"[CRITICAL] Erreur lecture: {e}")
-        return "Naxos1946."  # Fallback ultime
-
+        print(f"[ERROR] Erreur lecture mot de passe: {e}")
+        return "admin123"
 
 def verify_password(password):
+    """Vérifie le mot de passe"""
     try:
         correct = load_password()
-        if correct is None:
-            print("[ERROR] Aucun mot de passe configuré")
-            return False
         return hashlib.sha256(password.encode()).hexdigest() == hashlib.sha256(correct.encode()).hexdigest()
     except Exception as e:
-        print(f"[ERROR] Erreur verify_password: {e}")
+        print(f"[ERROR] Erreur vérification mot de passe: {e}")
         return False
-    
-# =============================================================================
-# FONCTION DE VÉRIFICATION DES CHEMINS - CORRIGÉE
-# =============================================================================
 
 def is_path_allowed(path):
-    r"""
-    Vérifie si le chemin est autorisé à être ouvert.
-    Accepte les chemins avec / ou \ comme séparateurs.
-    """
-    # Normaliser le chemin pour la comparaison (convertir / en \ et éliminer les doubles)
+    """Vérifie si le chemin est autorisé"""
     normalized = path.replace('/', '\\').replace('\\\\', '\\').lower()
     
-    # Liste des préfixes autorisés
     allowed_prefixes = [
         "c:\\users", "c:\\program files", "c:\\programdata", 
         "c:\\windows", "e:\\", "f:\\", "d:\\", "c:\\"
@@ -1452,11 +1476,92 @@ def is_path_allowed(path):
         if normalized.startswith(prefix.lower()):
             return True
     
-    # Accepter aussi les chemins de type C:\ seul
     if len(normalized) >= 2 and normalized[1] == ':' and normalized[0].isalpha():
         return True
         
     return False
+
+def get_local_ip():
+    """Récupère l'IP locale pour l'accès mobile"""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except: 
+        return "127.0.0.1"
+
+# =============================================================================
+# LOGIQUE DU SYSTRAY (BARRE DES TÂCHES)
+# =============================================================================
+
+def reset_password(icon):
+    """Réinitialise le mot de passe"""
+    try:
+        with open(PASSWORD_FILE, "w", encoding='utf-8') as f: 
+            f.write("admin123")
+        icon.notify("Mot de passe réinitialisé : admin123", "ROG Dashboard")
+        print("[SYSTRAY] Mot de passe réinitialisé")
+    except Exception as e:
+        icon.notify(f"Erreur: {e}", "ROG Dashboard")
+
+def open_dashboard():
+    """Ouvre le dashboard dans le navigateur"""
+    webbrowser.open(f"http://localhost:{PORT}")
+
+def copy_ip_link():
+    """Copie le lien IP dans le presse-papiers"""
+    link = f"http://{get_local_ip()}:{PORT}"
+    pyperclip.copy(link)
+    print(f"[SYSTRAY] Lien copié: {link}")
+
+def open_password_file():
+    """Ouvre le fichier de mot de passe"""
+    try:
+        if os.path.exists(PASSWORD_FILE):
+            os.startfile(PASSWORD_FILE)
+        else:
+            load_password()  # Crée le fichier si inexistant
+            os.startfile(PASSWORD_FILE)
+    except Exception as e:
+        print(f"[ERROR] Impossible d'ouvrir le fichier: {e}")
+
+def setup_tray():
+    """Configure et lance l'icône dans la barre des tâches"""
+    # Chargement de l'icône
+    try:
+        if os.path.exists(LOGO_PATH):
+            img = Image.open(LOGO_PATH)
+        else:
+            # Créer une icône par défaut si logo.ico manquant
+            img = Image.new('RGB', (64, 64), color=(0, 200, 200))
+            from PIL import ImageDraw
+            draw = ImageDraw.Draw(img)
+            draw.rectangle([16, 16, 48, 48], fill=(0, 255, 204))
+    except Exception as e:
+        print(f"[WARN] Erreur chargement icône: {e}")
+        img = Image.new('RGB', (64, 64), color=(0, 200, 200))
+
+    menu = Menu(
+        MenuItem("🚀 Ouvrir le Dashboard", lambda icon, item: open_dashboard(), default=True),
+        MenuItem("📋 Copier lien IP (Mobile)", lambda icon, item: copy_ip_link()),
+        Menu.SEPARATOR,
+        MenuItem("🔑 Gestion Mot de passe", Menu(
+            MenuItem("Voir/Modifier le fichier", lambda icon, item: open_password_file()),
+            MenuItem("Réinitialiser (admin123)", reset_password),
+        )),
+        Menu.SEPARATOR,
+        MenuItem("❌ Quitter", lambda icon: [icon.stop(), os._exit(0)])
+    )
+
+    icon = Icon("ROG_Dashboard", img, "ROG Dashboard v7.0", menu)
+    print("[SYSTRAY] Icône démarrée dans la barre des tâches")
+    icon.run()
+
+# =============================================================================
+# SERVEUR HTTP
+# =============================================================================
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True
@@ -1556,24 +1661,20 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            # =============================================================================
-            # RATE LIMITING - Protection contre les requêtes excessives
-            # =============================================================================
+            # Rate limiting (sauf localhost)
             client_ip = self.get_client_ip()
             current_time = time.time()
             
-            # Ignorer le rate limiting pour localhost (127.0.0.1, ::1)
             if not self.is_local_access():
                 if client_ip in request_counts:
                     last_time, count = request_counts[client_ip]
-                    if current_time - last_time < 1:  # fenêtre de 1 seconde
+                    if current_time - last_time < 1:
                         if count > REQUEST_LIMIT:
-                            print(f"[RATE LIMIT] IP {client_ip} bloquée ({count} requêtes/sec)")
+                            print(f"[RATE LIMIT] IP {client_ip} bloquée")
                             self._send_json({"error": "Too many requests"}, 429)
                             return
                         request_counts[client_ip] = (last_time, count + 1)
                     else:
-                        # Réinitialiser le compteur après 1 seconde
                         request_counts[client_ip] = (current_time, 1)
                 else:
                     request_counts[client_ip] = (current_time, 1)
@@ -1631,10 +1732,6 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self._handle_settings(parsed_path.query)
                 return
 
-            if path.startswith('/static/'):
-                self._serve_static(path[8:])
-                return
-
             self._send_json({"error": "Not found"}, 404)
 
         except Exception as e:
@@ -1645,45 +1742,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             except:
                 pass
 
-    def _serve_static(self, filepath):
-        try:
-            if '..' in filepath or filepath.startswith('/'):
-                self._send_json({"error": "Forbidden"}, 403)
-                return
-            
-            full_path = os.path.join('.', filepath)
-            if not os.path.exists(full_path) or not os.path.isfile(full_path):
-                self._send_json({"error": "Not found"}, 404)
-                return
-            
-            ext = os.path.splitext(filepath)[1].lower()
-            mime_types = {
-                '.js': 'application/javascript', '.css': 'text/css',
-                '.html': 'text/html', '.png': 'image/png',
-                '.jpg': 'image/jpeg', '.gif': 'image/gif',
-                '.svg': 'image/svg+xml', '.json': 'application/json'
-            }
-            content_type = mime_types.get(ext, 'application/octet-stream')
-            
-            with open(full_path, 'rb') as f:
-                content = f.read()
-            
-            self.send_response(200)
-            self.send_header('Content-Type', content_type)
-            self.send_header('Content-Length', str(len(content)))
-            self.send_cors_headers()
-            self.end_headers()
-            self.wfile.write(content)
-            
-        except Exception as e:
-            print(f"[ERROR] Static file: {e}")
-            self._send_json({"error": "Error serving file"}, 500)
-
-    # =============================================================================
-    # GESTION DE L'OUVERTURE DES DOSSIERS - CORRIGÉE ET AMÉLIORÉE
-    # =============================================================================
-    
     def _handle_open(self, query_string):
+        """Gère l'ouverture des dossiers"""
         try:
             query = parse_qs(query_string)
             file_path = query.get('path', [''])[0]
@@ -1693,51 +1753,39 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Path missing"}, 400)
                 return
             
-            # CORRECTION: Normaliser les séparateurs de chemin
-            # Convertir les / en \ pour Windows et éliminer les doubles backslashes
             clean_path = file_path.replace('/', '\\').replace('\\\\', '\\')
             
-            print(f"[EXPLORER] Chemin reçu: {file_path}")
-            print(f"[EXPLORER] Chemin nettoyé: {clean_path}")
+            print(f"[EXPLORER] Ouverture: {clean_path}")
             
-            # Vérifier si le chemin est autorisé
             if not is_path_allowed(clean_path):
-                print(f"[EXPLORER] Accès refusé pour: {clean_path}")
-                self._send_json({"error": "Access denied", "path": clean_path}, 403)
+                print(f"[EXPLORER] Accès refusé: {clean_path}")
+                self._send_json({"error": "Access denied"}, 403)
                 return
 
-            # Vérifier si le chemin existe
             if not os.path.exists(clean_path):
-                print(f"[EXPLORER] Chemin inexistant: {clean_path}")
-                self._send_json({"error": "Path does not exist", "path": clean_path}, 404)
+                self._send_json({"error": "Path does not exist"}, 404)
                 return
 
-            # Ouvrir avec explorer.exe (méthode la plus fiable sous Windows)
+            # Méthode principale: explorer.exe
             try:
-                print(f"[EXPLORER] Ouverture avec explorer.exe: {clean_path}")
-                # Utiliser shell=False pour éviter les problèmes de sécurité
-                # et passer le chemin comme argument séparé
                 subprocess.Popen(['explorer.exe', clean_path], shell=False)
                 self._send_json({"success": True, "path": clean_path})
                 print(f"[EXPLORER] Succès: {clean_path}")
             except Exception as e:
-                print(f"[EXPLORER] Erreur explorer.exe: {e}")
-                # Fallback sur os.startfile
+                print(f"[EXPLORER] Erreur explorer: {e}")
+                # Fallback: os.startfile
                 try:
-                    print(f"[EXPLORER] Tentative avec os.startfile: {clean_path}")
                     os.startfile(clean_path)
                     self._send_json({"success": True, "path": clean_path})
-                    print(f"[EXPLORER] Succès avec os.startfile")
                 except Exception as e2:
-                    print(f"[EXPLORER] Échec os.startfile: {e2}")
                     self._send_json({"error": f"explorer: {str(e)}, startfile: {str(e2)}"}, 500)
                     
         except Exception as e:
             print(f"[ERROR] _handle_open: {e}")
-            traceback.print_exc()
             self._send_json({"error": str(e)}, 500)
 
     def _handle_settings(self, query_string):
+        """Gère l'ouverture des paramètres Windows"""
         try:
             query = parse_qs(query_string)
             settings_uri = query.get('uri', [''])[0]
@@ -1747,11 +1795,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Invalid settings URI"}, 400)
                 return
 
-            try:
-                subprocess.Popen(['start', '', settings_uri], shell=True)
-                self._send_json({"success": True, "uri": settings_uri})
-            except Exception as e:
-                self._send_json({"error": str(e)}, 500)
+            subprocess.Popen(['start', '', settings_uri], shell=True)
+            self._send_json({"success": True, "uri": settings_uri})
         except Exception as e:
             self._send_json({"error": str(e)}, 500)
 
@@ -1778,6 +1823,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 pass
 
     def _handle_auth(self):
+        """Gère l'authentification"""
         try:
             content_length = int(self.headers.get('Content-Length', 0))
             if content_length <= 0 or content_length >= 10000:
@@ -1802,51 +1848,63 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._send_json({"success": False, "error": str(e)}, 400)
 
 # =============================================================================
-# POINT D'ENTRÉE
+# POINT D'ENTRÉE PRINCIPAL
 # =============================================================================
 
 def main():
+    """Fonction principale de démarrage"""
     try:
         print("=" * 70)
-        print(">>> ROG DASHBOARD v6.0 - SYSTÈME MODULAIRE")
-        print(">>> CORRECTION: Explorateur Windows amélioré")
+        print(">>> ROG DASHBOARD v7.0 - SYSTRAY EDITION")
+        print(">>> Mode Portable & EXE Support")
         print("=" * 70)
-        print(">>> Architecture:")
-        print("    ✓ Partie 1: Configuration et thèmes")
-        print("    ✓ Partie 2: Moniteur système (CPU/RAM/GPU/Réseau)")
-        print("    ✓ Partie 3: Templates HTML/JS/CSS")
-        print("    ✓ Partie 4: Serveur HTTP multi-threading (CORRIGÉ)")
+        print(f">>> Dossier script: {SCRIPT_DIR}")
+        print(f">>> Dossier ressources: {BUNDLE_DIR}")
+        print(f">>> Fichier mot de passe: {PASSWORD_FILE}")
         print("=" * 70)
         
-        if PSUTIL_AVAILABLE:
-            print("[OK] psutil: PRÊT - Données système en temps réel")
-        else:
-            print("[INFO] psutil: NON DISPONIBLE - Mode simulation")
-            
+        # Vérifier/créer le mot de passe
+        current_pwd = load_password()
+        print(f"[OK] Mot de passe chargé: {'*' * len(current_pwd)}")
+        
+        # Info GPU
         if GPU_AVAILABLE:
             print("[OK] GPU NVIDIA: PRÊT")
         else:
-            print("[INFO] GPU: Mode simulation ou non détecté")
-            
-        print(f">>> Mot de passe: {load_password()}")
-        print(">>> Accès local (127.0.0.1) = PAS DE MOT DE PASSE")
-        print(f">>> Démarrage sur http://localhost:{PORT}")
+            print("[INFO] GPU: Mode simulation (pynvml non disponible)")
+        
+        print("=" * 70)
+        print(f">>> Démarrage serveur: http://localhost:{PORT}")
+        print(f">>> Accès réseau: http://{get_local_ip()}:{PORT}")
         print(">>> Appuyez sur Ctrl+C pour arrêter")
         print("=" * 70)
         print()
 
+        # Lancer le systray dans un thread séparé
+        tray_thread = threading.Thread(target=setup_tray, daemon=True)
+        tray_thread.start()
+        
+        # Démarrer le serveur HTTP
         server = ThreadedHTTPServer(('0.0.0.0', PORT), DashboardHandler)
         server.serve_forever()
 
     except KeyboardInterrupt:
         print("\n>>> Arrêt demandé par l'utilisateur")
-        print(">>> Serveur arrêté")
-
+        
     except Exception as e:
-        print(f"[FATAL] Erreur critique: {e}")
-        traceback.print_exc()
-        input("Appuyez sur Entrée pour fermer...")
+        error_msg = f"[{datetime.now()}] Erreur critique: {traceback.format_exc()}"
+        print(f"\n[FATAL] {error_msg}")
+        
+        # Écrire dans le log de crash
+        try:
+            with open(CRASH_LOG, "a", encoding='utf-8') as f:
+                f.write(error_msg + "\n")
+            print(f"[INFO] Log d'erreur sauvegardé: {CRASH_LOG}")
+        except:
+            pass
+            
+        input("\nAppuyez sur Entrée pour fermer...")
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    main()    
