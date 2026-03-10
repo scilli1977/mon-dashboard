@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>ROG Dash - Final Station</title>
     <link rel="stylesheet" type="text/css" href="format.css">
-<!-- SUPPRESSION DU BASE TARGET BLANK GLOBAL -->
 </head>
 <body>
     <!-- SÉLECTEUR DE THÈME - CENTRÉ EN HAUT -->
@@ -40,6 +39,7 @@
     <div id="theme-notification" class="theme-notification"></div>
 
     <div class="page-wrapper">
+        <!-- SIDEBAR GAUCHE -->
         <div class="sidebar sidebar-left">
             <div class="widget-box">
                 <div class="widget-title">MÉTÉO RÉELLE (Charleroi)</div>
@@ -68,7 +68,7 @@
                 <div class="crypto-row"><span>CARDANO</span><span id="ada-price" class="price-tag">-- €</span></div>
             </div>
 
-            <!-- CENTRE MULTIMÉDIA - CORRIGÉ : SANS TARGET BLANK -->
+            <!-- CENTRE MULTIMÉDIA -->
             <div class="widget-box">
                 <div class="widget-title">CENTRE MULTIMÉDIA</div>
                 <div class="shortcut-grid">
@@ -123,6 +123,13 @@
                 </div>
             </div>
 
+            <!-- FLUX SCANNER NEWS (inversé - maintenant avant SÉCURITÉ) -->
+            <div class="widget-box">
+                <div class="widget-title">FLUX SCANNER NEWS</div>
+                <div class="news-ticker"><div id="news-stream" class="news-content">> INITIALISATION...</div></div>
+            </div>
+
+            <!-- SÉCURITÉ & PORTS (inversé - maintenant après FLUX) -->
             <div class="widget-box">
                 <div class="widget-title">SÉCURITÉ & PORTS</div>
                 <div class="console-box" id="security-status">
@@ -132,13 +139,9 @@
                     <span style="color: var(--accent-primary);">> ENCRYPTION :</span> AES-256
                 </div>
             </div>
+        </div> <!-- FIN SIDEBAR LEFT -->
 
-            <div class="widget-box">
-                <div class="widget-title">FLUX SCANNER NEWS</div>
-                <div class="news-ticker"><div id="news-stream" class="news-content">> INITIALISATION...</div></div>
-            </div>
-        </div>
-
+        <!-- CONTENU CENTRAL -->
         <div class="main-content">
             <div class="weather-header">
                 <span>LOCALISATION: CHARLEROI, BE</span>
@@ -188,10 +191,11 @@
                     STATUT DU RÉSEAU: <span id="backend-text">OFFLINE</span> | SÉCURITÉ: ACTIVE
                 </span>
             </div>
-        </div>
+        </div> <!-- FIN MAIN CONTENT -->
 
+        <!-- SIDEBAR DROITE -->
         <div class="sidebar sidebar-right">
-            <!-- ÉNERGIE & THERMIQUE - CORRIGÉ : BOUTONS SANS HREF, UNIQUEMENT ONCLICK -->
+            <!-- ÉNERGIE & THERMIQUE -->
             <div class="widget-box">
                 <div class="widget-title">ÉNERGIE</div>
                 <div class="shortcut-grid" style="margin-top: 4px;">
@@ -286,7 +290,7 @@
                 <div class="bar-bg"><div id="bar-disk-f" class="bar-fill" style="width: 0%;"></div></div>
             </div>
 
-            <!-- EXPLORATEUR - CORRIGÉ : CHEMINS AVEC FORWARD SLASHS -->
+            <!-- EXPLORATEUR -->
             <div class="widget-box">
                 <div class="widget-title">Explorateur</div>
                 <div class="shortcut-grid" style="margin-top: 4px;">
@@ -349,8 +353,8 @@
                     > Welcome back, Vassili.
                 </div>
             </div>
-        </div>
-    </div>
+        </div> <!-- FIN SIDEBAR RIGHT -->
+    </div> <!-- FIN PAGE WRAPPER -->
 
 <script src="dashboard.js"></script>
 </body>
